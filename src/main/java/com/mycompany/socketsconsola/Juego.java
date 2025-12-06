@@ -10,6 +10,7 @@ import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Insets;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -37,7 +38,8 @@ import javax.swing.border.Border;
 public class Juego extends javax.swing.JFrame {
     
     private List<Personajes> todosLosPersonajes;
-    
+    private List<Personajes> heroesElegidos;
+    private Map<String, List<Armas>> catalogoArmas;
     
     private int alto = 800;
     private int ancho = 1200;
@@ -65,15 +67,17 @@ public class Juego extends javax.swing.JFrame {
         this.setSize(ancho, alto);
         configurarPantallaCompleta();
         iniciarElementos(ancho, alto);
+        colocarFondos();
         this.todosLosPersonajes = GestorJson.cargarPersonajes();
+        this.catalogoArmas = GestorJson.cargarCatalogoArmas();
         cargarPersonajesEnScrollPanel();
     }
     
     private void iniciarElementos(int newAncho, int newAlto){
         //Menu inicio:
-        TituloMenu.setBounds((newAncho - 42)/2, 10, 42, 16);
-        Jugar.setBounds((newAncho - 72)/2, 70, 72, 23);
-        Salir.setBounds((newAncho - 72)/2, 150, 72, 23);
+        TituloMenu.setBounds((newAncho - 101)/2, 20, 101, 29);
+        Jugar.setBounds((newAncho - 72)/2, 150, 72, 23);
+        Salir.setBounds((newAncho - 72)/2, 280, 72, 23);
         //Escoger jugadores:
         seleccionTitle.setBounds((newAncho - 274)/2, 30, 274, 29);
         scrollPersonajes.setBounds((newAncho - 600)/2, 100, 600, 600);
@@ -86,11 +90,14 @@ public class Juego extends javax.swing.JFrame {
         attacked.setBounds(250, 0, 500, 345);
         attack.setBounds(250, 345, 500, 345);
         team.setBounds(750, 0, 450, 690);
+        //Armas:
+        TituloArmas.setBounds((newAncho - 187)/2, 30, 187, 29);
         
     }
     
     private void colocarFondos(){
-        
+        JPanelImage miImagen = new JPanelImage(MenuInicio,"/Imagenes/Fondos/DeadWoods.jpg");
+        MenuInicio.add(miImagen).repaint();
     }
     
     private void cargarPersonajesEnScrollPanel(){
@@ -146,26 +153,26 @@ public class Juego extends javax.swing.JFrame {
         }
     }
     
-        private void manejarSeleccion(JComponent componenteActual, String idPersonaje) {
-            if (componentesSeleccionados.containsKey(idPersonaje)) {
-                componenteActual.setBorder(BORDE_NORMAL); 
-                idsSeleccionados.remove(idPersonaje);
-                componentesSeleccionados.remove(idPersonaje);
+    private void manejarSeleccion(JComponent componenteActual, String idPersonaje) {
+        if (componentesSeleccionados.containsKey(idPersonaje)) {
+            componenteActual.setBorder(BORDE_NORMAL); 
+            idsSeleccionados.remove(idPersonaje);
+            componentesSeleccionados.remove(idPersonaje);
 
-            } 
-            else {
-                if (idsSeleccionados.size() < 3) {
+        } 
+        else {
+            if (idsSeleccionados.size() < 3) {
 
-                    componenteActual.setBorder(BORDE_SELECCION); 
-                    idsSeleccionados.add(idPersonaje);
-                    componentesSeleccionados.put(idPersonaje, componenteActual); 
+                componenteActual.setBorder(BORDE_SELECCION); 
+                idsSeleccionados.add(idPersonaje);
+                componentesSeleccionados.put(idPersonaje, componenteActual); 
 
-                } else {
-                    JOptionPane.showMessageDialog(this, "Solo puedes seleccionar un máximo de 3 personajes.");
-                }
+            } else {
+                JOptionPane.showMessageDialog(this, "Solo puedes seleccionar un máximo de 3 personajes.");
             }
-            System.out.println("Personajes seleccionados: " + idsSeleccionados.size());
         }
+        System.out.println("Personajes seleccionados: " + idsSeleccionados.size());
+    }
     
     private void configurarPantallaCompleta() {
         InputMap inputMap = getRootPane().getInputMap(javax.swing.JComponent.WHEN_IN_FOCUSED_WINDOW);
@@ -227,6 +234,20 @@ public class Juego extends javax.swing.JFrame {
         cardLayout = (CardLayout) (getContentPane().getLayout());
         cardLayout.show(getContentPane(), "card4");
     }
+    
+    public List<Personajes> obtenerPersonajesSeleccionados() {
+    
+        List<Personajes> listaFinal = new ArrayList<>();
+
+        for (Personajes p : this.todosLosPersonajes) {
+
+            if (idsSeleccionados.contains(p.getNombre())) {
+                listaFinal.add(p);
+            }
+        }
+
+        return listaFinal;
+    }
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -253,6 +274,8 @@ public class Juego extends javax.swing.JFrame {
         attacked = new javax.swing.JPanel();
         attack = new javax.swing.JPanel();
         team = new javax.swing.JPanel();
+        MenuArmas = new javax.swing.JPanel();
+        TituloArmas = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(1200, 800));
@@ -262,9 +285,12 @@ public class Juego extends javax.swing.JFrame {
         MenuInicio.setMinimumSize(new java.awt.Dimension(1200, 800));
         MenuInicio.setLayout(null);
 
+        TituloMenu.setFont(new java.awt.Font("Unispace", 0, 24)); // NOI18N
+        TituloMenu.setForeground(new java.awt.Color(255, 255, 255));
+        TituloMenu.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         TituloMenu.setText("Sockets");
         MenuInicio.add(TituloMenu);
-        TituloMenu.setBounds(180, 20, 40, 16);
+        TituloMenu.setBounds(180, 20, 110, 29);
 
         Jugar.setText("Jugar");
         Jugar.addActionListener(new java.awt.event.ActionListener() {
@@ -410,6 +436,15 @@ public class Juego extends javax.swing.JFrame {
 
         getContentPane().add(Mapa, "card4");
 
+        MenuArmas.setLayout(null);
+
+        TituloArmas.setFont(new java.awt.Font("Unispace", 0, 24)); // NOI18N
+        TituloArmas.setText("Escoger armas");
+        MenuArmas.add(TituloArmas);
+        TituloArmas.setBounds(454, 59, 187, 29);
+
+        getContentPane().add(MenuArmas, "card5");
+
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
@@ -426,8 +461,17 @@ public class Juego extends javax.swing.JFrame {
 
     private void btnSeleccionarPersonajesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSeleccionarPersonajesActionPerformed
         // TODO add your handling code here:
+        if(idsSeleccionados.size() == 3){
+          heroesElegidos = obtenerPersonajesSeleccionados();  
+        }
+        else{
+            JOptionPane.showMessageDialog(this, "Faltan personajes por escoger (Deben ser 3)");
+            return;
+        }
+        String arma1 = catalogoArmas.get(heroesElegidos.get(0).getTipo()).get(0).getNombre();
+        System.out.println(arma1);
         cardLayout = (CardLayout) (getContentPane().getLayout());
-        cardLayout.show(getContentPane(), "card4");
+        cardLayout.show(getContentPane(), "card5");
     }//GEN-LAST:event_btnSeleccionarPersonajesActionPerformed
 
     /**
@@ -469,12 +513,14 @@ public class Juego extends javax.swing.JFrame {
     private javax.swing.JScrollPane Consola;
     private javax.swing.JButton Jugar;
     private javax.swing.JPanel Mapa;
+    private javax.swing.JPanel MenuArmas;
     private javax.swing.JPanel MenuInicio;
     private javax.swing.JScrollPane Ranking;
     private javax.swing.JButton Salir;
     private javax.swing.JPanel SeleccionPersonajesMenu;
     private javax.swing.JScrollPane Status;
     private javax.swing.JTextArea StatusText;
+    private javax.swing.JLabel TituloArmas;
     private javax.swing.JLabel TituloMenu;
     private javax.swing.JPanel attack;
     private javax.swing.JPanel attacked;

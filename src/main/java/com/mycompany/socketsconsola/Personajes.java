@@ -5,6 +5,9 @@
 package com.mycompany.socketsconsola;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 /**
  *
@@ -16,6 +19,11 @@ public class Personajes implements Serializable{
     private String nombre;
     private String tipo;
     private String imagen;
+    
+    //Armas:
+    private transient Random random = new Random();;
+    private List<String> armas;
+    private List<List<Integer>> damages = new ArrayList<>();
 
     public String getNombre() {
         return nombre;
@@ -27,6 +35,21 @@ public class Personajes implements Serializable{
 
     public String getImagen() {
         return imagen;
+    }
+
+    public void setArmas(List<String> armas) {
+        this.armas = armas;
+    }
+    
+    public void generarDamage(){
+        for(int i = 0; i < 5; i++){
+            List<Integer> damagePorArma = new ArrayList<>();
+            for(int j = 0; j < 10; j++){
+                int damage = random.nextInt(81) + 20;
+                damagePorArma.add(damage);
+            }
+            damages.add(damagePorArma);
+        }
     }
     
 }

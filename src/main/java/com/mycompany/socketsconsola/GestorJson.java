@@ -20,6 +20,7 @@ import java.lang.reflect.Type;
 public class GestorJson {
     private static final String ARCHIVO = "/Personajes.json";
     private static final String ARCHIVO2 = "/Jugadores.json";
+    private static final String ARCHIVO_ARMAS = "/Armas.json";
     
     public static List<Personajes> cargarPersonajes() throws IOException{
         
@@ -65,4 +66,31 @@ public class GestorJson {
             return Collections.emptyList();
         }
     }
+    
+    public static Map<String, List<Armas>> cargarCatalogoArmas() {
+        InputStream stream = GestorJson.class.getResourceAsStream(ARCHIVO_ARMAS);
+        if (stream == null) {
+            return Collections.emptyMap(); // Devuelve un mapa vacío en lugar de una lista vacía
+        }
+
+        try(Reader reader = new InputStreamReader(stream)){
+            Gson gson = new Gson();
+            
+            // Definición del tipo complejo (Mapa de String a Lista de Armas)
+            Type tipoCatalogo = new TypeToken<Map<String, List<Armas>>>(){}.getType();
+            
+            Map<String, List<Armas>> catalogo = gson.fromJson(reader, tipoCatalogo);
+            
+            // Nota: Si el error de Random persiste, es probable que se deba a 
+            // la dependencia de Gson en una versión de Java moderna.
+            
+            return (catalogo != null) ? catalogo : Collections.emptyMap();
+
+        }catch(Exception e){
+            System.err.println("Error al procesar el JSON de Armas: " + e.getMessage());
+            e.printStackTrace();
+            return Collections.emptyMap();
+        }
+    }
+  
 }
