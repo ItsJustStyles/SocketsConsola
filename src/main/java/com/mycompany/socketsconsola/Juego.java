@@ -76,10 +76,16 @@ public class Juego extends javax.swing.JFrame {
         Salir.setBounds((newAncho - 72)/2, 150, 72, 23);
         //Escoger jugadores:
         seleccionTitle.setBounds((newAncho - 274)/2, 30, 274, 29);
-        scrollPersonajes.setSize(600, 600);
         scrollPersonajes.setBounds((newAncho - 600)/2, 100, 600, 600);
         btnSeleccionarPersonajes.setBounds((newAncho - 191)/2, 720, 191, 27);
         //Mapa:
+        Ranking.setBounds(0, 0, 250, 230);
+        Against.setBounds(0, 230, 250, 230);
+        Status.setBounds(0, 460, 250, 230);
+        Consola.setBounds(0, 690, 1200, 110);
+        attacked.setBounds(250, 0, 500, 345);
+        attack.setBounds(250, 345, 500, 345);
+        team.setBounds(750, 0, 450, 690);
         
     }
     
@@ -177,45 +183,50 @@ public class Juego extends javax.swing.JFrame {
         });
     }
     
-private void toggleFullScreen() {
-    if (graphicsDevice.isFullScreenSupported()) {
-        if (!isFullScreen) {
-            this.setVisible(false); 
-            this.dispose(); 
-            
-            this.setUndecorated(true); 
-            
-            graphicsDevice.setFullScreenWindow(this);
-            
-            this.setVisible(true);
-            
-            isFullScreen = true;
-            
-            int x = this.getWidth();
-            int y = this.getHeight();
-            iniciarElementos(x,y);
-            
-        } else {
-            this.setVisible(true); 
-            graphicsDevice.setFullScreenWindow(null);
-            this.dispose(); 
+    private void toggleFullScreen() {
+        if (graphicsDevice.isFullScreenSupported()) {
+            if (!isFullScreen) {
+                this.setVisible(false); 
+                this.dispose(); 
 
-            this.setUndecorated(false);
-            this.setSize(this.ancho, this.alto); 
-            System.out.println(this.getWidth());
-            System.out.println(this.getHeight());
-            this.setLocationRelativeTo(null); 
-            
-            this.setVisible(true);
-            
-            isFullScreen = false;
-            iniciarElementos(this.ancho, this.alto);
+                this.setUndecorated(true); 
+
+                graphicsDevice.setFullScreenWindow(this);
+
+                this.setVisible(true);
+
+                isFullScreen = true;
+
+                int x = this.getWidth();
+                int y = this.getHeight();
+                iniciarElementos(x,y);
+
+            } else {
+                this.setVisible(true); 
+                graphicsDevice.setFullScreenWindow(null);
+                this.dispose(); 
+
+                this.setUndecorated(false);
+                this.setSize(this.ancho, this.alto); 
+                System.out.println(this.getWidth());
+                System.out.println(this.getHeight());
+                this.setLocationRelativeTo(null); 
+
+                this.setVisible(true);
+
+                isFullScreen = false;
+                iniciarElementos(this.ancho, this.alto);
+            }
+
+        } else {
+            System.err.println("El modo de pantalla completa no es compatible con este dispositivo.");
         }
-        
-    } else {
-        System.err.println("El modo de pantalla completa no es compatible con este dispositivo.");
     }
-}
+    
+    public void startGame(){
+        cardLayout = (CardLayout) (getContentPane().getLayout());
+        cardLayout.show(getContentPane(), "card4");
+    }
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -231,21 +242,20 @@ private void toggleFullScreen() {
         scrollPersonajesPanel = new javax.swing.JPanel();
         btnSeleccionarPersonajes = new javax.swing.JButton();
         Mapa = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jTextArea2 = new javax.swing.JTextArea();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        jTextArea3 = new javax.swing.JTextArea();
-        jScrollPane4 = new javax.swing.JScrollPane();
-        jTextArea4 = new javax.swing.JTextArea();
-        jPanel1 = new javax.swing.JPanel();
-        jPanel2 = new javax.swing.JPanel();
-        jPanel3 = new javax.swing.JPanel();
+        Ranking = new javax.swing.JScrollPane();
+        rankingText = new javax.swing.JTextArea();
+        Against = new javax.swing.JScrollPane();
+        AgainstText = new javax.swing.JTextArea();
+        Status = new javax.swing.JScrollPane();
+        StatusText = new javax.swing.JTextArea();
+        Consola = new javax.swing.JScrollPane();
+        consoltaEntry = new javax.swing.JTextArea();
+        attacked = new javax.swing.JPanel();
+        attack = new javax.swing.JPanel();
+        team = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(1200, 800));
-        setPreferredSize(new java.awt.Dimension(1200, 800));
         setSize(new java.awt.Dimension(400, 300));
         getContentPane().setLayout(new java.awt.CardLayout());
 
@@ -304,100 +314,99 @@ private void toggleFullScreen() {
 
         getContentPane().add(SeleccionPersonajesMenu, "card3");
 
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jScrollPane1.setViewportView(jTextArea1);
+        Mapa.setLayout(null);
 
-        jTextArea2.setColumns(20);
-        jTextArea2.setRows(5);
-        jScrollPane2.setViewportView(jTextArea2);
+        Ranking.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        Ranking.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        Ranking.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
 
-        jTextArea3.setColumns(20);
-        jTextArea3.setRows(5);
-        jScrollPane3.setViewportView(jTextArea3);
+        rankingText.setColumns(20);
+        rankingText.setRows(5);
+        Ranking.setViewportView(rankingText);
 
-        jTextArea4.setColumns(20);
-        jTextArea4.setRows(5);
-        jScrollPane4.setViewportView(jTextArea4);
+        Mapa.add(Ranking);
+        Ranking.setBounds(0, 0, 250, 212);
 
-        jPanel1.setBackground(new java.awt.Color(102, 102, 255));
-        jPanel1.setForeground(new java.awt.Color(0, 153, 255));
+        Against.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        Against.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        Against.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 587, Short.MAX_VALUE)
+        AgainstText.setColumns(20);
+        AgainstText.setRows(5);
+        Against.setViewportView(AgainstText);
+
+        Mapa.add(Against);
+        Against.setBounds(0, 218, 250, 248);
+
+        Status.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+
+        StatusText.setColumns(20);
+        StatusText.setRows(5);
+        Status.setViewportView(StatusText);
+
+        Mapa.add(Status);
+        Status.setBounds(0, 473, 250, 176);
+
+        Consola.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+
+        consoltaEntry.setColumns(20);
+        consoltaEntry.setRows(5);
+        Consola.setViewportView(consoltaEntry);
+
+        Mapa.add(Consola);
+        Consola.setBounds(0, 655, 1200, 145);
+
+        attacked.setBackground(new java.awt.Color(102, 102, 255));
+        attacked.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        attacked.setForeground(new java.awt.Color(0, 0, 0));
+
+        javax.swing.GroupLayout attackedLayout = new javax.swing.GroupLayout(attacked);
+        attacked.setLayout(attackedLayout);
+        attackedLayout.setHorizontalGroup(
+            attackedLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 585, Short.MAX_VALUE)
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 361, Short.MAX_VALUE)
+        attackedLayout.setVerticalGroup(
+            attackedLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 359, Short.MAX_VALUE)
         );
 
-        jPanel2.setBackground(new java.awt.Color(102, 102, 255));
-        jPanel2.setForeground(new java.awt.Color(102, 102, 255));
+        Mapa.add(attacked);
+        attacked.setBounds(256, 0, 587, 361);
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        attack.setBackground(new java.awt.Color(102, 102, 255));
+        attack.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        attack.setForeground(new java.awt.Color(0, 0, 0));
+
+        javax.swing.GroupLayout attackLayout = new javax.swing.GroupLayout(attack);
+        attack.setLayout(attackLayout);
+        attackLayout.setHorizontalGroup(
+            attackLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 0, Short.MAX_VALUE)
         );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 260, Short.MAX_VALUE)
+        attackLayout.setVerticalGroup(
+            attackLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 258, Short.MAX_VALUE)
         );
 
-        jPanel3.setBackground(new java.awt.Color(102, 102, 255));
+        Mapa.add(attack);
+        attack.setBounds(256, 389, 587, 260);
 
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        team.setBackground(new java.awt.Color(102, 102, 255));
+
+        javax.swing.GroupLayout teamLayout = new javax.swing.GroupLayout(team);
+        team.setLayout(teamLayout);
+        teamLayout.setHorizontalGroup(
+            teamLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 317, Short.MAX_VALUE)
         );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        teamLayout.setVerticalGroup(
+            teamLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 0, Short.MAX_VALUE)
         );
 
-        javax.swing.GroupLayout MapaLayout = new javax.swing.GroupLayout(Mapa);
-        Mapa.setLayout(MapaLayout);
-        MapaLayout.setHorizontalGroup(
-            MapaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(MapaLayout.createSequentialGroup()
-                .addGroup(MapaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1)
-                    .addComponent(jScrollPane3))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(MapaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 40, Short.MAX_VALUE)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addComponent(jScrollPane4)
-        );
-        MapaLayout.setVerticalGroup(
-            MapaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(MapaLayout.createSequentialGroup()
-                .addGroup(MapaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(MapaLayout.createSequentialGroup()
-                        .addGroup(MapaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(MapaLayout.createSequentialGroup()
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 212, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 248, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(7, 7, 7)
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 176, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, MapaLayout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE))
-        );
+        Mapa.add(team);
+        team.setBounds(883, 0, 317, 649);
 
         getContentPane().add(Mapa, "card4");
 
@@ -455,26 +464,26 @@ private void toggleFullScreen() {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JScrollPane Against;
+    private javax.swing.JTextArea AgainstText;
+    private javax.swing.JScrollPane Consola;
     private javax.swing.JButton Jugar;
     private javax.swing.JPanel Mapa;
     private javax.swing.JPanel MenuInicio;
+    private javax.swing.JScrollPane Ranking;
     private javax.swing.JButton Salir;
     private javax.swing.JPanel SeleccionPersonajesMenu;
+    private javax.swing.JScrollPane Status;
+    private javax.swing.JTextArea StatusText;
     private javax.swing.JLabel TituloMenu;
+    private javax.swing.JPanel attack;
+    private javax.swing.JPanel attacked;
     private javax.swing.JButton btnSeleccionarPersonajes;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JScrollPane jScrollPane4;
-    private javax.swing.JTextArea jTextArea1;
-    private javax.swing.JTextArea jTextArea2;
-    private javax.swing.JTextArea jTextArea3;
-    private javax.swing.JTextArea jTextArea4;
+    private javax.swing.JTextArea consoltaEntry;
+    private javax.swing.JTextArea rankingText;
     private javax.swing.JScrollPane scrollPersonajes;
     private javax.swing.JPanel scrollPersonajesPanel;
     private javax.swing.JLabel seleccionTitle;
+    private javax.swing.JPanel team;
     // End of variables declaration//GEN-END:variables
 }
