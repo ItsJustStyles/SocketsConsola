@@ -51,5 +51,12 @@ public class Personajes implements Serializable{
             damages.add(damagePorArma);
         }
     }
-    
+
+    public List<Armas> getArmas() {
+        return armas;
+    }
+
+    public List<List<Integer>> getDamages() {
+        return damages;
+    }
 }

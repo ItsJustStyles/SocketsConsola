@@ -12,6 +12,7 @@ public class Armas {
     private String tipo;
     private String nombre;
     private String tipo_arma;
+    private String imagen;
     
     public Armas() {
     }
@@ -22,6 +23,10 @@ public class Armas {
 
     public String getTipoArma() {
         return tipo_arma;
+    }
+
+    public String getImagen() {
+        return imagen;
     }
     
 }

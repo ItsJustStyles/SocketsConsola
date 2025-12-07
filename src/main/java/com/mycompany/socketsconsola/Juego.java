@@ -43,7 +43,7 @@ public class Juego extends javax.swing.JFrame {
     private int indexArma = 0;
     
     private int alto = 800;
-    private int ancho = 1200;
+    private int ancho = 1400;
     private CardLayout cardLayout = new CardLayout();
     
     private final GraphicsDevice graphicsDevice = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
@@ -56,6 +56,10 @@ public class Juego extends javax.swing.JFrame {
     private final Map<String, JComponent> componentesSeleccionados = new HashMap<>(); 
     private final Border BORDE_SELECCION = BorderFactory.createLineBorder(new Color(13, 35, 71), 3);
     private final Border BORDE_NORMAL = BorderFactory.createEmptyBorder();
+    
+    private JPanel panelSeleccionadoAnterior = null;
+    private Border bordeSeleccionado = BorderFactory.createLineBorder(Color.YELLOW, 3); 
+    private Border bordeNormal = null; 
     
     public SonidoMenu menuPersonajes = new SonidoMenu("/Musica/BalatroMainTheme.wav");;
     
@@ -89,10 +93,20 @@ public class Juego extends javax.swing.JFrame {
         Ranking.setBounds(0, 0, 250, 230);
         Against.setBounds(0, 230, 250, 230);
         Status.setBounds(0, 460, 250, 230);
-        Consola.setBounds(0, 690, 1200, 110);
+        Consola.setBounds(0, 690, 1400, 110);
         attacked.setBounds(250, 0, 500, 345);
         attack.setBounds(250, 345, 500, 345);
-        team.setBounds(750, 0, 450, 690);
+        team.setBounds(750, 0, 650, 690);
+        //Mapa - team:
+        yourTeam.setBounds(10, 10, 79, 18);
+        teamSeleccionado.setBounds(0, 30, 650, 330);
+        armasPorPersonaje.setBounds(0, 360, 650, 330);
+        //Mapa - armas:
+        arma1.setBounds(10, 30, 600, 15);
+        arma2.setBounds(10, 96, 600, 15);
+        arma3.setBounds(10, 162, 600, 15);
+        arma4.setBounds(10, 228, 600, 15);
+        arma5.setBounds(10, 294, 600, 15);
         //Armas:
         TituloArmas.setBounds((newAncho - 187)/2, 30, 187, 29);
         SeleccionarArmas.setBounds((newAncho - 220)/2, 720, 220, 30);
@@ -201,7 +215,21 @@ public class Juego extends javax.swing.JFrame {
                 JLabel lblNombre = new JLabel("Nombre: " + a.getNombre());
                 lblNombre.setAlignmentX(JComponent.CENTER_ALIGNMENT);
                 
+                ImageIcon iconoOriginal = new ImageIcon(getClass().getResource(a.getImagen()));
+                ImageIcon iconoRedimensionado;
+                
+                JLabel lblIcono = new JLabel();             
+                if(a.getImagen().contains(".gif")){
+                    iconoRedimensionado = iconoOriginal;
+                }else{
+                    iconoRedimensionado = new ImageIcon(iconoOriginal.getImage().getScaledInstance(125, 125, java.awt.Image.SCALE_SMOOTH));
+                }
+
+                lblIcono.setIcon(iconoRedimensionado);
+                lblIcono.setAlignmentX(JComponent.CENTER_ALIGNMENT);
+                
                 armas.add(lblNombre);
+                armas.add(lblIcono);
                 
                 armas.addMouseListener(new java.awt.event.MouseAdapter() {
                     @Override
@@ -240,6 +268,147 @@ public class Juego extends javax.swing.JFrame {
             }
         }
         System.out.println("Armas seleccionados: " + idsSeleccionadosArmas.size());
+    }
+    
+    private void caragrTeam(){
+        boolean primerHeroe = true;
+        try{
+            for(Personajes p : heroesElegidos){
+                JPanel panelPersonaje = new JPanel();
+                panelPersonaje.setOpaque(false);
+                panelPersonaje.setBorder(null);
+                panelPersonaje.setLayout(new javax.swing.BoxLayout(panelPersonaje, javax.swing.BoxLayout.Y_AXIS));
+                
+                JPanelImage2 miImagen = new JPanelImage2(p.getImagen());
+                
+                miImagen.addMouseListener(new java.awt.event.MouseAdapter() {
+                @Override
+                public void mouseClicked(java.awt.event.MouseEvent evt) {
+                    logicaSeleccionMapaTeam(p, panelPersonaje);
+                }
+            });
+                
+                panelPersonaje.add(miImagen);
+                if(primerHeroe){
+                    panelPersonaje.setBorder(bordeSeleccionado);
+                    panelPersonaje.revalidate();
+                    panelPersonaje.repaint();
+                    panelSeleccionadoAnterior = panelPersonaje;
+                    primerHeroe = false;
+                }
+
+                teamSeleccionado.add(panelPersonaje);
+            }
+            
+            teamSeleccionado.revalidate();
+            teamSeleccionado.repaint();
+            
+        }catch(Exception e){
+            
+        }
+    }
+    
+    private void logicaSeleccionMapaTeam(Personajes heroeSeleccionado, JPanel panelDelHeroe){
+        if (panelSeleccionadoAnterior != null) {
+            panelSeleccionadoAnterior.setBorder(bordeNormal);
+            panelSeleccionadoAnterior.revalidate();
+            panelSeleccionadoAnterior.repaint();
+        }
+
+        panelDelHeroe.setBorder(bordeSeleccionado);
+        panelDelHeroe.revalidate();
+        panelDelHeroe.repaint();
+
+        panelSeleccionadoAnterior = panelDelHeroe;
+        cargarDamages(heroeSeleccionado);
+    }
+    
+    
+    private void cargarDamages(Personajes p){
+        try {
+            List<List<Integer>> a = p.getDamages();
+
+            List<Integer> damageArma1 = a.get(0);
+
+            arma1.setText(p.getArmas().get(0).getNombre() + ": "
+                          + damageArma1.get(0) + " "
+                          + damageArma1.get(1) + " "
+                          + damageArma1.get(2) + " "
+                          + damageArma1.get(3) + " "
+                          + damageArma1.get(4) + " "
+                          + damageArma1.get(5) + " "
+                          + damageArma1.get(6) + " "
+                          + damageArma1.get(7) + " "
+                          + damageArma1.get(8) + " "
+                          + damageArma1.get(9)); 
+
+            // --- Arma 2 ---
+            if (p.getArmas().size() > 1 && a.size() > 1) {
+                List<Integer> damageArma2 = a.get(1);
+                arma2.setText(p.getArmas().get(1).getNombre() + ": "
+                              + damageArma2.get(0) + " "
+                              + damageArma2.get(1) + " "
+                              + damageArma2.get(2) + " "
+                              + damageArma2.get(3) + " "
+                              + damageArma2.get(4) + " "
+                              + damageArma2.get(5) + " "
+                              + damageArma2.get(6) + " "
+                              + damageArma2.get(7) + " "
+                              + damageArma2.get(8) + " "
+                              + damageArma2.get(9));
+            } else { arma2.setText(""); }
+
+            // --- Arma 3 ---
+            if (p.getArmas().size() > 2 && a.size() > 2) {
+                List<Integer> damageArma3 = a.get(2);
+                arma3.setText(p.getArmas().get(2).getNombre() + ": "
+                              + damageArma3.get(0) + " "
+                              + damageArma3.get(1) + " "
+                              + damageArma3.get(2) + " "
+                              + damageArma3.get(3) + " "
+                              + damageArma3.get(4) + " "
+                              + damageArma3.get(5) + " "
+                              + damageArma3.get(6) + " "
+                              + damageArma3.get(7) + " "
+                              + damageArma3.get(8) + " "
+                              + damageArma3.get(9));
+            } else { arma3.setText(""); }
+
+            // --- Arma 4 ---
+            if (p.getArmas().size() > 3 && a.size() > 3) {
+                List<Integer> damageArma4 = a.get(3);
+                arma4.setText(p.getArmas().get(3).getNombre() + ": "
+                              + damageArma4.get(0) + " "
+                              + damageArma4.get(1) + " "
+                              + damageArma4.get(2) + " "
+                              + damageArma4.get(3) + " "
+                              + damageArma4.get(4) + " "
+                              + damageArma4.get(5) + " "
+                              + damageArma4.get(6) + " "
+                              + damageArma4.get(7) + " "
+                              + damageArma4.get(8) + " "
+                              + damageArma4.get(9));
+            } else { arma4.setText(""); }
+
+            // --- Arma 5 ---
+            if (p.getArmas().size() > 4 && a.size() > 4) {
+                List<Integer> damageArma5 = a.get(4);
+                arma5.setText(p.getArmas().get(4).getNombre() + ": "
+                              + damageArma5.get(0) + " "
+                              + damageArma5.get(1) + " "
+                              + damageArma5.get(2) + " "
+                              + damageArma5.get(3) + " "
+                              + damageArma5.get(4) + " "
+                              + damageArma5.get(5) + " "
+                              + damageArma5.get(6) + " "
+                              + damageArma5.get(7) + " "
+                              + damageArma5.get(8) + " "
+                              + damageArma5.get(9));
+            } else { arma5.setText(""); }
+
+        } catch (Exception e) {
+            System.err.println("Error al cargar daños: " + e.getMessage());
+        }
     }
     
     private void configurarPantallaCompleta() {
@@ -354,6 +523,14 @@ public class Juego extends javax.swing.JFrame {
         attacked = new javax.swing.JPanel();
         attack = new javax.swing.JPanel();
         team = new javax.swing.JPanel();
+        yourTeam = new javax.swing.JLabel();
+        teamSeleccionado = new javax.swing.JPanel();
+        armasPorPersonaje = new javax.swing.JPanel();
+        arma1 = new javax.swing.JLabel();
+        arma2 = new javax.swing.JLabel();
+        arma3 = new javax.swing.JLabel();
+        arma4 = new javax.swing.JLabel();
+        arma5 = new javax.swing.JLabel();
         MenuArmas = new javax.swing.JPanel();
         TituloArmas = new javax.swing.JLabel();
         SeleccionarArmas = new javax.swing.JButton();
@@ -367,6 +544,7 @@ public class Juego extends javax.swing.JFrame {
         getContentPane().setLayout(new java.awt.CardLayout());
 
         MenuInicio.setMinimumSize(new java.awt.Dimension(1200, 800));
+        MenuInicio.setPreferredSize(new java.awt.Dimension(1400, 800));
         MenuInicio.setLayout(null);
 
         TituloMenu.setFont(new java.awt.Font("Unispace", 0, 24)); // NOI18N
@@ -503,17 +681,49 @@ public class Juego extends javax.swing.JFrame {
         attack.setBounds(256, 389, 587, 260);
 
         team.setBackground(new java.awt.Color(102, 102, 255));
+        team.setLayout(null);
 
-        javax.swing.GroupLayout teamLayout = new javax.swing.GroupLayout(team);
-        team.setLayout(teamLayout);
-        teamLayout.setHorizontalGroup(
-            teamLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 317, Short.MAX_VALUE)
-        );
-        teamLayout.setVerticalGroup(
-            teamLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
+        yourTeam.setFont(new java.awt.Font("Unispace", 0, 14)); // NOI18N
+        yourTeam.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        yourTeam.setText("Tu equipo");
+        team.add(yourTeam);
+        yourTeam.setBounds(6, 6, 79, 18);
+
+        teamSeleccionado.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        teamSeleccionado.setLayout(new java.awt.GridLayout(0, 3));
+        team.add(teamSeleccionado);
+        teamSeleccionado.setBounds(6, 42, 305, 224);
+
+        armasPorPersonaje.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        armasPorPersonaje.setLayout(null);
+
+        arma1.setFont(new java.awt.Font("Unispace", 0, 12)); // NOI18N
+        arma1.setText("jLabel1");
+        armasPorPersonaje.add(arma1);
+        arma1.setBounds(21, 25, 100, 15);
+
+        arma2.setFont(new java.awt.Font("Unispace", 0, 12)); // NOI18N
+        arma2.setText("jLabel2");
+        armasPorPersonaje.add(arma2);
+        arma2.setBounds(21, 75, 100, 15);
+
+        arma3.setFont(new java.awt.Font("Unispace", 0, 12)); // NOI18N
+        arma3.setText("jLabel3");
+        armasPorPersonaje.add(arma3);
+        arma3.setBounds(21, 132, 100, 15);
+
+        arma4.setFont(new java.awt.Font("Unispace", 0, 12)); // NOI18N
+        arma4.setText("jLabel4");
+        armasPorPersonaje.add(arma4);
+        arma4.setBounds(21, 176, 100, 15);
+
+        arma5.setFont(new java.awt.Font("Unispace", 0, 12)); // NOI18N
+        arma5.setText("jLabel5");
+        armasPorPersonaje.add(arma5);
+        arma5.setBounds(21, 229, 100, 15);
+
+        team.add(armasPorPersonaje);
+        armasPorPersonaje.setBounds(6, 278, 305, 306);
 
         Mapa.add(team);
         team.setBounds(883, 0, 317, 649);
@@ -578,6 +788,7 @@ public class Juego extends javax.swing.JFrame {
             return;
         }
         cargarArmasenScroll(indexArma);
+        caragrTeam();
         cardLayout = (CardLayout) (getContentPane().getLayout());
         cardLayout.show(getContentPane(), "card5");
     }//GEN-LAST:event_btnSeleccionarPersonajesActionPerformed
@@ -592,10 +803,15 @@ public class Juego extends javax.swing.JFrame {
         }
         indexArma++;
         if(indexArma > 2){
+            for(Personajes p: heroesElegidos){
+                p.generarDamage();
+            }
+            cargarDamages(heroesElegidos.get(0));
             cardLayout = (CardLayout) (getContentPane().getLayout());
             cardLayout.show(getContentPane(), "card4");
+        }else{
+            cargarArmasenScroll(indexArma);
         }
-        cargarArmasenScroll(indexArma);
     }//GEN-LAST:event_SeleccionarArmasActionPerformed
 
     /**
@@ -647,6 +863,12 @@ public class Juego extends javax.swing.JFrame {
     private javax.swing.JTextArea StatusText;
     private javax.swing.JLabel TituloArmas;
     private javax.swing.JLabel TituloMenu;
+    private javax.swing.JLabel arma1;
+    private javax.swing.JLabel arma2;
+    private javax.swing.JLabel arma3;
+    private javax.swing.JLabel arma4;
+    private javax.swing.JLabel arma5;
+    private javax.swing.JPanel armasPorPersonaje;
     private javax.swing.JPanel attack;
     private javax.swing.JPanel attacked;
     private javax.swing.JButton btnSeleccionarPersonajes;
@@ -659,5 +881,7 @@ public class Juego extends javax.swing.JFrame {
     private javax.swing.JPanel scrollPersonajesPanel;
     private javax.swing.JLabel seleccionTitle;
     private javax.swing.JPanel team;
+    private javax.swing.JPanel teamSeleccionado;
+    private javax.swing.JLabel yourTeam;
     // End of variables declaration//GEN-END:variables
 }
