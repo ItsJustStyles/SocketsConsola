@@ -212,7 +212,7 @@ public class Juego extends javax.swing.JFrame {
                 armas.setBorder(null);
                 armas.setLayout(new javax.swing.BoxLayout(armas, javax.swing.BoxLayout.Y_AXIS));
                 
-                JLabel lblNombre = new JLabel("Nombre: " + a.getNombre());
+                JLabel lblNombre = new JLabel(a.getNombre());
                 lblNombre.setAlignmentX(JComponent.CENTER_ALIGNMENT);
                 
                 ImageIcon iconoOriginal = new ImageIcon(getClass().getResource(a.getImagen()));
