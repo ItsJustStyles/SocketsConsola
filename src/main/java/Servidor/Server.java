@@ -5,6 +5,7 @@
 package Servidor;
 
 import Comandos.Command;
+import Comandos.CommandGanador;
 import Comandos.CommandMessage;
 import Comandos.CommandStartGame;
 import Comandos.CommandTurn;
@@ -191,5 +192,31 @@ public class Server {
         }
 
         anunciarTurnoActual();
-}
+    }
+    
+    public synchronized void eliminarJugador(ThreadServidor target){
+        int index = turnOrder.indexOf(target);
+        
+        if(index != -1){
+            turnOrder.remove(index);
+        }
+        
+        if(index < currentTurn){
+            currentTurn--;
+        }
+        
+        if(currentTurn == index){
+            avanzarTurno();
+        }
+        
+        VerificarGanador();
+    }
+    
+    public void VerificarGanador(){
+        if(turnOrder.size() == 1){
+            ThreadServidor ganador = turnOrder.get(0);
+            broadcast(new CommandGanador(ganador.name));
+        }
+    }
+    
 }

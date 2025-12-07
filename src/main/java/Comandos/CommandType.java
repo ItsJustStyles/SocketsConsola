@@ -12,7 +12,9 @@ public enum CommandType {
     ATAQUE(5),              // attack Andres 4 5
     MESSAGE(2),             // message hola a todos
     PRIVATE_MESSAGE(3),     // private Andres hola andres
-    RENDIRSE(1),              // giveup
+    RENDIRSE(1),            // giveup
+    ELIMINARJUGADOR(0),     // Elimina el jugador despues de que se rinde o pierde
+    GANADOR(0),
     NAME(2),                // name Andres
     READY(1),               // nuevo comando: jugador listo
     START_GAME(0),          // nuevo comando: iniciar juego

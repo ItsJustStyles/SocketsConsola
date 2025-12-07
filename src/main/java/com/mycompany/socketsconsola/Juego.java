@@ -38,7 +38,9 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.InputMap;
+import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -562,6 +564,25 @@ public class Juego extends javax.swing.JFrame {
         cliente = new Client(this, "Justin", heroesElegidos, 35500, "localhost");
     }
     
+    //Logica del ganador y perdedor:
+    public void mostrarVictoria(String ganador) {
+        JDialog dialog = new JDialog(this, "Victoria", true);
+        dialog.setSize(350, 180);
+        dialog.setLocationRelativeTo(this);
+        dialog.setLayout(new BorderLayout());
+
+        JLabel lbl = new JLabel("¡" + ganador + " ha ganado!", SwingConstants.CENTER);
+        lbl.setFont(new Font("Arial", Font.BOLD, 18));
+
+        JButton btn = new JButton("Aceptar");
+        btn.addActionListener(e -> dialog.dispose());
+
+        dialog.add(lbl, BorderLayout.CENTER);
+        dialog.add(btn, BorderLayout.SOUTH);
+
+        dialog.setVisible(true);
+    }
+    
     //Comandos:
     public void verJugadores(List<Personajes> heroesJugador){
 
@@ -616,6 +637,8 @@ public class Juego extends javax.swing.JFrame {
         ventanaHeroes.setLocationRelativeTo(null); 
         ventanaHeroes.setVisible(true);
     }
+    
+    
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -659,6 +682,10 @@ public class Juego extends javax.swing.JFrame {
         lobbyScroll = new javax.swing.JScrollPane();
         lobbyText = new javax.swing.JTextArea();
         Listo = new javax.swing.JButton();
+        Partidas = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        CrearPartida = new javax.swing.JButton();
+        BuscarPartida = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(1200, 800));
@@ -902,6 +929,51 @@ public class Juego extends javax.swing.JFrame {
 
         getContentPane().add(lobby, "card6");
 
+        jLabel1.setText("Partida");
+
+        CrearPartida.setText("Crear partida");
+        CrearPartida.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CrearPartidaActionPerformed(evt);
+            }
+        });
+
+        BuscarPartida.setText("Buscar partida");
+        BuscarPartida.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BuscarPartidaActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout PartidasLayout = new javax.swing.GroupLayout(Partidas);
+        Partidas.setLayout(PartidasLayout);
+        PartidasLayout.setHorizontalGroup(
+            PartidasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(PartidasLayout.createSequentialGroup()
+                .addGap(528, 528, 528)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(PartidasLayout.createSequentialGroup()
+                .addGap(163, 163, 163)
+                .addComponent(CrearPartida)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 493, Short.MAX_VALUE)
+                .addComponent(BuscarPartida)
+                .addGap(338, 338, 338))
+        );
+        PartidasLayout.setVerticalGroup(
+            PartidasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(PartidasLayout.createSequentialGroup()
+                .addGap(40, 40, 40)
+                .addComponent(jLabel1)
+                .addGap(136, 136, 136)
+                .addGroup(PartidasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(CrearPartida)
+                    .addComponent(BuscarPartida))
+                .addContainerGap(585, Short.MAX_VALUE))
+        );
+
+        getContentPane().add(Partidas, "card7");
+
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
@@ -945,9 +1017,8 @@ public class Juego extends javax.swing.JFrame {
                 p.generarDamage();
             }
             cargarDamages(heroesElegidos.get(0));
-            iniciarServer();
             cardLayout = (CardLayout) (getContentPane().getLayout());
-            cardLayout.show(getContentPane(), "card6");
+            cardLayout.show(getContentPane(), "card7");
         }else{
             cargarArmasenScroll(indexArma);
         }
@@ -966,6 +1037,18 @@ public class Juego extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Error al enviar estado de 'listo' al servidor.");
         }
     }//GEN-LAST:event_ListoActionPerformed
+
+    private void CrearPartidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CrearPartidaActionPerformed
+        iniciarServer();
+        cardLayout = (CardLayout) (getContentPane().getLayout());
+        cardLayout.show(getContentPane(), "card6");
+    }//GEN-LAST:event_CrearPartidaActionPerformed
+
+    private void BuscarPartidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BuscarPartidaActionPerformed
+        cliente = new Client(this, "Maicol", heroesElegidos, 35500, "localhost");
+        cardLayout = (CardLayout) (getContentPane().getLayout());
+        cardLayout.show(getContentPane(), "card6");
+    }//GEN-LAST:event_BuscarPartidaActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1003,11 +1086,14 @@ public class Juego extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane Against;
     private javax.swing.JTextArea AgainstText;
+    private javax.swing.JButton BuscarPartida;
+    private javax.swing.JButton CrearPartida;
     private javax.swing.JButton Jugar;
     private javax.swing.JButton Listo;
     private javax.swing.JPanel Mapa;
     private javax.swing.JPanel MenuArmas;
     private javax.swing.JPanel MenuInicio;
+    private javax.swing.JPanel Partidas;
     private javax.swing.JScrollPane Ranking;
     private javax.swing.JButton Salir;
     private javax.swing.JPanel SeleccionPersonajesMenu;
@@ -1026,6 +1112,7 @@ public class Juego extends javax.swing.JFrame {
     private javax.swing.JPanel attacked;
     private javax.swing.JButton btnSeleccionarPersonajes;
     private javax.swing.JTextField consola;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel lobby;
     private javax.swing.JScrollPane lobbyScroll;
     private javax.swing.JTextArea lobbyText;

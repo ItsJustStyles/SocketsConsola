@@ -18,7 +18,8 @@ public class CommandRendirse extends Command{
 
     @Override
     public void processForServer(ThreadServidor threadServidor) {
-        
+        CommandEliminarJugador jugador = new CommandEliminarJugador(threadServidor.name, "R");
+        jugador.processForServer(threadServidor);
     }
     
 }
