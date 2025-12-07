@@ -25,7 +25,7 @@ public abstract class Command implements Serializable{
     
     public abstract void processForServer(ThreadServidor threadServidor);
     public void processInClient(Client client){
-        //client.getRefFrame().writeMessage(this.toString());
+        client.getRefFrame().writeLobby(this.toString());
     }
 
     public CommandType getType() {

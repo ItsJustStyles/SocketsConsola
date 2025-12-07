@@ -4,11 +4,23 @@
  */
 package com.mycompany.socketsconsola;
 
+import Cliente.Client;
+import Comandos.Command;
+import Comandos.CommandFactory;
+import Comandos.CommandReady;
+import Comandos.CommandUtil;
+import Servidor.Server;
+import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,18 +28,24 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.sound.sampled.LineUnavailableException;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.InputMap;
 import javax.swing.JComponent;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 
@@ -41,6 +59,8 @@ public class Juego extends javax.swing.JFrame {
     private List<Personajes> heroesElegidos;
     private Map<String, List<Armas>> catalogoArmas;
     private int indexArma = 0;
+    
+    Client cliente;
     
     private int alto = 800;
     private int ancho = 1400;
@@ -71,6 +91,13 @@ public class Juego extends javax.swing.JFrame {
     public Juego() throws IOException, LineUnavailableException {
         initComponents();
         menuPersonajes.loop();
+        
+        consola.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent evt){
+                handleCommandInput(evt);
+            }
+        });
+        
         this.setSize(ancho, alto);
         configurarPantallaCompleta();
         iniciarElementos(ancho, alto);
@@ -93,7 +120,7 @@ public class Juego extends javax.swing.JFrame {
         Ranking.setBounds(0, 0, 250, 230);
         Against.setBounds(0, 230, 250, 230);
         Status.setBounds(0, 460, 250, 230);
-        Consola.setBounds(0, 690, 1400, 110);
+        consola.setBounds(0, 690, 1400, 110);
         attacked.setBounds(250, 0, 500, 345);
         attack.setBounds(250, 345, 500, 345);
         team.setBounds(750, 0, 650, 690);
@@ -112,6 +139,9 @@ public class Juego extends javax.swing.JFrame {
         SeleccionarArmas.setBounds((newAncho - 220)/2, 720, 220, 30);
         scrollArmas.setBounds((newAncho - 600)/2, 100, 600, 600);
         personajeArmas.setBounds((newAncho - 300)/2, 70, 300, 18);
+        //Lobby:
+        lobbyScroll.setBounds(10, 10, 600, 600);
+        Listo.setBounds(1280, 720, 75, 25);
         
     }
     
@@ -486,7 +516,7 @@ public class Juego extends javax.swing.JFrame {
         return listaFinal;
     }
     
-    public List<Armas> obtenerArmasSeleccionados(){
+    private List<Armas> obtenerArmasSeleccionados(){
         List<Armas> listaFinal = new ArrayList<>();
         for(List<Armas> listaArmasPorTipo : this.catalogoArmas.values()){
             for(Armas a : listaArmasPorTipo){
@@ -496,6 +526,95 @@ public class Juego extends javax.swing.JFrame {
             }
         }
         return listaFinal;
+    }
+    
+    private void handleCommandInput(java.awt.event.ActionEvent evt) {
+      String msg =  consola.getText().trim();
+      consola.setText("");
+      if (msg.length()>0){
+          String args[] = CommandUtil.tokenizerArgs(msg);
+          if (args.length > 0){
+              Command comando = CommandFactory.getCommand(args);
+              if (comando != null){
+                  try {
+                      cliente.objectSender.writeObject(comando);
+                  } catch (IOException ex) {
+
+                  }
+              }else{
+                  System.out.println("Error: comando desconocido");
+              }
+          }
+      }
+    }
+      
+    
+    public void writeLobby(String msg){
+        lobbyText.append(msg + "\n");
+    }
+    
+    public void clearLobby(){
+        lobbyText.setText("");
+    }
+    
+    private void iniciarServer(){
+        Server server = new Server(this);
+        cliente = new Client(this, "Justin", heroesElegidos, 35500, "localhost");
+    }
+    
+    //Comandos:
+    public void verJugadores(List<Personajes> heroesJugador){
+
+        JFrame ventanaHeroes = new JFrame("Detalles de Héroes del Jugador");
+        ventanaHeroes.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // Cierra solo esta ventana
+        ventanaHeroes.setSize(800, 600);
+        ventanaHeroes.setLayout(new BorderLayout());
+
+        JPanel panelContenedor = new JPanel();
+        panelContenedor.setLayout(new BoxLayout(panelContenedor, BoxLayout.X_AXIS));
+
+        for(Personajes p : heroesJugador){
+            JPanel panelPersonaje = new JPanel();
+            panelPersonaje.setOpaque(false);
+            panelPersonaje.setBorder(null);
+            panelPersonaje.setLayout(new javax.swing.BoxLayout(panelPersonaje, javax.swing.BoxLayout.Y_AXIS));
+
+
+            JLabel lblNombre = new JLabel("Nombre: " + p.getNombre());
+            lblNombre.setAlignmentX(JComponent.CENTER_ALIGNMENT);
+
+            ImageIcon iconoOriginal = new ImageIcon(getClass().getResource(p.getImagen()));
+            ImageIcon iconoRedimensionado;
+
+            JLabel lblIcono = new JLabel();             
+            if(p.getImagen().contains(".gif")){
+                iconoRedimensionado = iconoOriginal;
+            }else{
+                iconoRedimensionado = new ImageIcon(iconoOriginal.getImage().getScaledInstance(125, 125, java.awt.Image.SCALE_SMOOTH));
+            }
+
+            lblIcono.setIcon(iconoRedimensionado);
+            lblIcono.setAlignmentX(JComponent.CENTER_ALIGNMENT);
+
+            JLabel lblTipo = new JLabel("Tipo: " + p.getTipo());
+            lblTipo.setAlignmentX(JComponent.CENTER_ALIGNMENT);
+
+
+            panelPersonaje.add(lblNombre);
+            panelPersonaje.add(Box.createVerticalStrut(10));
+            panelPersonaje.add(lblIcono);
+            panelPersonaje.add(Box.createVerticalStrut(10));
+            panelPersonaje.add(lblTipo);
+
+            panelContenedor.add(panelPersonaje);
+        }
+
+        JScrollPane scrollPane = new JScrollPane(panelContenedor);
+        scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        
+        ventanaHeroes.add(scrollPane, BorderLayout.CENTER);
+        ventanaHeroes.setLocationRelativeTo(null); 
+        ventanaHeroes.setVisible(true);
     }
 
     @SuppressWarnings("unchecked")
@@ -518,8 +637,6 @@ public class Juego extends javax.swing.JFrame {
         AgainstText = new javax.swing.JTextArea();
         Status = new javax.swing.JScrollPane();
         StatusText = new javax.swing.JTextArea();
-        Consola = new javax.swing.JScrollPane();
-        consoltaEntry = new javax.swing.JTextArea();
         attacked = new javax.swing.JPanel();
         attack = new javax.swing.JPanel();
         team = new javax.swing.JPanel();
@@ -531,12 +648,17 @@ public class Juego extends javax.swing.JFrame {
         arma3 = new javax.swing.JLabel();
         arma4 = new javax.swing.JLabel();
         arma5 = new javax.swing.JLabel();
+        consola = new javax.swing.JTextField();
         MenuArmas = new javax.swing.JPanel();
         TituloArmas = new javax.swing.JLabel();
         SeleccionarArmas = new javax.swing.JButton();
         scrollArmas = new javax.swing.JScrollPane();
         panelArmas = new javax.swing.JPanel();
         personajeArmas = new javax.swing.JLabel();
+        lobby = new javax.swing.JPanel();
+        lobbyScroll = new javax.swing.JScrollPane();
+        lobbyText = new javax.swing.JTextArea();
+        Listo = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(1200, 800));
@@ -635,15 +757,6 @@ public class Juego extends javax.swing.JFrame {
         Mapa.add(Status);
         Status.setBounds(0, 473, 250, 176);
 
-        Consola.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-
-        consoltaEntry.setColumns(20);
-        consoltaEntry.setRows(5);
-        Consola.setViewportView(consoltaEntry);
-
-        Mapa.add(Consola);
-        Consola.setBounds(0, 655, 1200, 145);
-
         attacked.setBackground(new java.awt.Color(102, 102, 255));
         attacked.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         attacked.setForeground(new java.awt.Color(0, 0, 0));
@@ -692,7 +805,7 @@ public class Juego extends javax.swing.JFrame {
         teamSeleccionado.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         teamSeleccionado.setLayout(new java.awt.GridLayout(0, 3));
         team.add(teamSeleccionado);
-        teamSeleccionado.setBounds(6, 42, 305, 224);
+        teamSeleccionado.setBounds(6, 42, 305, 2);
 
         armasPorPersonaje.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         armasPorPersonaje.setLayout(null);
@@ -723,10 +836,14 @@ public class Juego extends javax.swing.JFrame {
         arma5.setBounds(21, 229, 100, 15);
 
         team.add(armasPorPersonaje);
-        armasPorPersonaje.setBounds(6, 278, 305, 306);
+        armasPorPersonaje.setBounds(6, 278, 305, 0);
 
         Mapa.add(team);
-        team.setBounds(883, 0, 317, 649);
+        team.setBounds(883, 0, 0, 649);
+
+        consola.setText("jTextField1");
+        Mapa.add(consola);
+        consola.setBounds(10, 660, 850, 140);
 
         getContentPane().add(Mapa, "card4");
 
@@ -763,6 +880,27 @@ public class Juego extends javax.swing.JFrame {
         personajeArmas.setBounds(560, 100, 106, 18);
 
         getContentPane().add(MenuArmas, "card5");
+
+        lobby.setLayout(null);
+
+        lobbyText.setColumns(20);
+        lobbyText.setRows(5);
+        lobbyScroll.setViewportView(lobbyText);
+
+        lobby.add(lobbyScroll);
+        lobbyScroll.setBounds(6, 6, 339, 310);
+
+        Listo.setFont(new java.awt.Font("Unispace", 0, 14)); // NOI18N
+        Listo.setText("Listo");
+        Listo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ListoActionPerformed(evt);
+            }
+        });
+        lobby.add(Listo);
+        Listo.setBounds(1023, 750, 74, 25);
+
+        getContentPane().add(lobby, "card6");
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -807,12 +945,27 @@ public class Juego extends javax.swing.JFrame {
                 p.generarDamage();
             }
             cargarDamages(heroesElegidos.get(0));
+            iniciarServer();
             cardLayout = (CardLayout) (getContentPane().getLayout());
-            cardLayout.show(getContentPane(), "card4");
+            cardLayout.show(getContentPane(), "card6");
         }else{
             cargarArmasenScroll(indexArma);
         }
     }//GEN-LAST:event_SeleccionarArmasActionPerformed
+
+    private void ListoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ListoActionPerformed
+        try {
+            CommandReady ready = new CommandReady(this.getTitle()); 
+            cliente.objectSender.writeObject(ready);
+
+            Listo.setEnabled(false);
+            JOptionPane.showMessageDialog(this, "Marcado como listo. Esperando a otros jugadores...");
+
+        } catch (IOException ex) {
+            Logger.getLogger(Juego.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(this, "Error al enviar estado de 'listo' al servidor.");
+        }
+    }//GEN-LAST:event_ListoActionPerformed
 
     /**
      * @param args the command line arguments
@@ -850,8 +1003,8 @@ public class Juego extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane Against;
     private javax.swing.JTextArea AgainstText;
-    private javax.swing.JScrollPane Consola;
     private javax.swing.JButton Jugar;
+    private javax.swing.JButton Listo;
     private javax.swing.JPanel Mapa;
     private javax.swing.JPanel MenuArmas;
     private javax.swing.JPanel MenuInicio;
@@ -872,7 +1025,10 @@ public class Juego extends javax.swing.JFrame {
     private javax.swing.JPanel attack;
     private javax.swing.JPanel attacked;
     private javax.swing.JButton btnSeleccionarPersonajes;
-    private javax.swing.JTextArea consoltaEntry;
+    private javax.swing.JTextField consola;
+    private javax.swing.JPanel lobby;
+    private javax.swing.JScrollPane lobbyScroll;
+    private javax.swing.JTextArea lobbyText;
     private javax.swing.JPanel panelArmas;
     private javax.swing.JLabel personajeArmas;
     private javax.swing.JTextArea rankingText;

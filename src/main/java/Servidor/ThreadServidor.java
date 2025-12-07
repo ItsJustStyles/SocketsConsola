@@ -65,7 +65,7 @@ public class ThreadServidor extends Thread {
     }
 
     public Server getRefServer() {
-        return server;  // ✅ corregido
+        return server; 
     }
 
     public void showAllClients() {

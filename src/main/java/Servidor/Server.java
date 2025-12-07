@@ -130,6 +130,17 @@ public class Server {
     public Juego getRefFrame() {
         return refFrame;
     }
+    
+        public ThreadServidor getClientByName(String targetName) {
+        
+        for (ThreadServidor clientThread : connectedClients) {
+            if (clientThread.name != null && clientThread.name.equalsIgnoreCase(targetName)) {
+                
+                return clientThread; 
+            }
+        }
+        return null; 
+    }
      
     public void iniciarTurnos() {
         turnOrder = new ArrayList<>(connectedClients);

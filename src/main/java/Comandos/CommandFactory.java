@@ -16,6 +16,12 @@ public class CommandFactory {
         
         switch (type) {
             case "ATAQUE":
+            case "NAME":
+                return new CommandName(args);
+            case "RENDIRSE":
+                return new CommandRendirse(args);
+            case "SELECCIONARJUGADOR":
+                return new CommandSeleccionarJugador(args);
             default:
                 return null;
         }

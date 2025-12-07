@@ -4,11 +4,15 @@
  */
 package com.mycompany.socketsconsola;
 
+import java.io.Serializable;
+
 /**
  *
  * @author lacay
  */
-public class Armas {
+public class Armas implements Serializable{
+    private static final long serialVersionUID = 1L;
+    
     private String tipo;
     private String nombre;
     private String tipo_arma;

@@ -12,12 +12,14 @@ public enum CommandType {
     ATAQUE(5),              // attack Andres 4 5
     MESSAGE(2),             // message hola a todos
     PRIVATE_MESSAGE(3),     // private Andres hola andres
-    GIVEUP(1),              // giveup
+    RENDIRSE(1),              // giveup
     NAME(2),                // name Andres
     READY(1),               // nuevo comando: jugador listo
     START_GAME(0),          // nuevo comando: iniciar juego
     TEAM(0),
-    LOBBY(0);        
+    LOBBY(0),
+    SELECCIONARJUGADOR(2),
+    ENVIARHEROES(0);        
     
     private final int requiredParameters;
 

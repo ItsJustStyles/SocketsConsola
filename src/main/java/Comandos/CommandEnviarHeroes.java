@@ -6,16 +6,18 @@ package Comandos;
 
 import Cliente.Client;
 import Servidor.ThreadServidor;
+import com.mycompany.socketsconsola.Personajes;
 import java.util.List;
 
 /**
  *
  * @author lacay
  */
-public class lobbyUpdateCommand extends Command{
-
-    public lobbyUpdateCommand(List<String> playerNames) {
-        super(CommandType.LOBBY, playerNames.toArray(new String[0]));
+public class CommandEnviarHeroes extends Command{
+    List<Personajes> heroes;
+    public CommandEnviarHeroes(List<Personajes> heroes) {
+        this.heroes = heroes;
+        super(CommandType.ENVIARHEROES, new String[]{});
     }
 
     @Override
@@ -25,12 +27,7 @@ public class lobbyUpdateCommand extends Command{
 
     @Override
     public void processInClient(Client client) {
-        client.getRefFrame().clearLobby();
-        client.getRefFrame().writeLobby("Jugadores:");
-        String[] playersArray = this.getParameters();
-        for(String p : playersArray){
-            client.getRefFrame().writeLobby(p);
-        }  
+         client.getRefFrame().verJugadores(heroes);
     }
     
     
