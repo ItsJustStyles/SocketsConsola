@@ -40,6 +40,7 @@ public class Juego extends javax.swing.JFrame {
     private List<Personajes> todosLosPersonajes;
     private List<Personajes> heroesElegidos;
     private Map<String, List<Armas>> catalogoArmas;
+    private int indexArma = 0;
     
     private int alto = 800;
     private int ancho = 1200;
@@ -49,6 +50,8 @@ public class Juego extends javax.swing.JFrame {
     private boolean isFullScreen = false;
     private Insets originalInsets; 
     
+    private final Set<String> idsSeleccionadosArmas = new HashSet<>(); 
+    private final Map<String, JComponent> componentesSeleccionadosArmas = new HashMap<>(); 
     private final Set<String> idsSeleccionados = new HashSet<>(); 
     private final Map<String, JComponent> componentesSeleccionados = new HashMap<>(); 
     private final Border BORDE_SELECCION = BorderFactory.createLineBorder(new Color(13, 35, 71), 3);
@@ -92,6 +95,9 @@ public class Juego extends javax.swing.JFrame {
         team.setBounds(750, 0, 450, 690);
         //Armas:
         TituloArmas.setBounds((newAncho - 187)/2, 30, 187, 29);
+        SeleccionarArmas.setBounds((newAncho - 220)/2, 720, 220, 30);
+        scrollArmas.setBounds((newAncho - 600)/2, 100, 600, 600);
+        personajeArmas.setBounds((newAncho - 300)/2, 70, 300, 18);
         
     }
     
@@ -174,6 +180,68 @@ public class Juego extends javax.swing.JFrame {
         System.out.println("Personajes seleccionados: " + idsSeleccionados.size());
     }
     
+    
+    private void cargarArmasenScroll(int index){
+        idsSeleccionadosArmas.clear();
+        componentesSeleccionadosArmas.clear();
+        panelArmas.removeAll();
+        panelArmas.revalidate();
+        panelArmas.repaint();
+ 
+        personajeArmas.setText("Nombre: " + heroesElegidos.get(index).getNombre());
+        String tipoArma = heroesElegidos.get(index).getTipo();
+        List<Armas> armasTipo = catalogoArmas.get(tipoArma);
+        try{
+            for(Armas a : armasTipo){
+                JPanel armas = new JPanel();
+                armas.setOpaque(false);
+                armas.setBorder(null);
+                armas.setLayout(new javax.swing.BoxLayout(armas, javax.swing.BoxLayout.Y_AXIS));
+                
+                JLabel lblNombre = new JLabel("Nombre: " + a.getNombre());
+                lblNombre.setAlignmentX(JComponent.CENTER_ALIGNMENT);
+                
+                armas.add(lblNombre);
+                
+                armas.addMouseListener(new java.awt.event.MouseAdapter() {
+                    @Override
+                    public void mouseClicked(java.awt.event.MouseEvent evt) {
+                        manejarSeleccionArmas(armas, a.getNombre());
+                    }
+                });
+                
+                panelArmas.add(armas);
+            }
+            
+            panelArmas.revalidate();
+            panelArmas.repaint();
+            
+        }catch(Exception e){
+            System.err.println("Error al cargar armas en la interfaz: " + e.getMessage());
+        }
+    }
+    
+    private void manejarSeleccionArmas(JComponent componenteActual, String idArma){
+        if (componentesSeleccionadosArmas.containsKey(idArma)) {
+            componenteActual.setBorder(BORDE_NORMAL); 
+            idsSeleccionadosArmas.remove(idArma);
+            componentesSeleccionadosArmas.remove(idArma);
+
+        } 
+        else {
+            if (idsSeleccionadosArmas.size() < 5) {
+
+                componenteActual.setBorder(BORDE_SELECCION); 
+                idsSeleccionadosArmas.add(idArma);
+                componentesSeleccionadosArmas.put(idArma, componenteActual); 
+
+            } else {
+                JOptionPane.showMessageDialog(this, "Solo puedes seleccionar un máximo de 5 armas.");
+            }
+        }
+        System.out.println("Armas seleccionados: " + idsSeleccionadosArmas.size());
+    }
+    
     private void configurarPantallaCompleta() {
         InputMap inputMap = getRootPane().getInputMap(javax.swing.JComponent.WHEN_IN_FOCUSED_WINDOW);
         ActionMap actionMap = getRootPane().getActionMap();
@@ -248,6 +316,18 @@ public class Juego extends javax.swing.JFrame {
 
         return listaFinal;
     }
+    
+    public List<Armas> obtenerArmasSeleccionados(){
+        List<Armas> listaFinal = new ArrayList<>();
+        for(List<Armas> listaArmasPorTipo : this.catalogoArmas.values()){
+            for(Armas a : listaArmasPorTipo){
+                if(idsSeleccionadosArmas.contains(a.getNombre())){
+                listaFinal.add(a);
+                }
+            }
+        }
+        return listaFinal;
+    }
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -276,6 +356,10 @@ public class Juego extends javax.swing.JFrame {
         team = new javax.swing.JPanel();
         MenuArmas = new javax.swing.JPanel();
         TituloArmas = new javax.swing.JLabel();
+        SeleccionarArmas = new javax.swing.JButton();
+        scrollArmas = new javax.swing.JScrollPane();
+        panelArmas = new javax.swing.JPanel();
+        personajeArmas = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(1200, 800));
@@ -443,6 +527,31 @@ public class Juego extends javax.swing.JFrame {
         MenuArmas.add(TituloArmas);
         TituloArmas.setBounds(454, 59, 187, 29);
 
+        SeleccionarArmas.setFont(new java.awt.Font("Unispace", 0, 18)); // NOI18N
+        SeleccionarArmas.setText("Seleccionar armas");
+        SeleccionarArmas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SeleccionarArmasActionPerformed(evt);
+            }
+        });
+        MenuArmas.add(SeleccionarArmas);
+        SeleccionarArmas.setBounds(510, 760, 230, 30);
+
+        scrollArmas.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollArmas.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+
+        panelArmas.setLayout(new java.awt.GridLayout(0, 3, 15, 15));
+        scrollArmas.setViewportView(panelArmas);
+
+        MenuArmas.add(scrollArmas);
+        scrollArmas.setBounds(320, 130, 730, 600);
+
+        personajeArmas.setFont(new java.awt.Font("Unispace", 0, 14)); // NOI18N
+        personajeArmas.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        personajeArmas.setText("Nombre: Juan");
+        MenuArmas.add(personajeArmas);
+        personajeArmas.setBounds(560, 100, 106, 18);
+
         getContentPane().add(MenuArmas, "card5");
 
         pack();
@@ -468,11 +577,26 @@ public class Juego extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Faltan personajes por escoger (Deben ser 3)");
             return;
         }
-        String arma1 = catalogoArmas.get(heroesElegidos.get(0).getTipo()).get(0).getNombre();
-        System.out.println(arma1);
+        cargarArmasenScroll(indexArma);
         cardLayout = (CardLayout) (getContentPane().getLayout());
         cardLayout.show(getContentPane(), "card5");
     }//GEN-LAST:event_btnSeleccionarPersonajesActionPerformed
+
+    private void SeleccionarArmasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SeleccionarArmasActionPerformed
+        // TODO add your handling code here:
+        if(idsSeleccionadosArmas.size() == 5){
+            heroesElegidos.get(indexArma).setArmas(obtenerArmasSeleccionados());
+        }else{
+            JOptionPane.showMessageDialog(this, "Faltan armas por escoger (Deben ser 5)");
+            return;
+        }
+        indexArma++;
+        if(indexArma > 2){
+            cardLayout = (CardLayout) (getContentPane().getLayout());
+            cardLayout.show(getContentPane(), "card4");
+        }
+        cargarArmasenScroll(indexArma);
+    }//GEN-LAST:event_SeleccionarArmasActionPerformed
 
     /**
      * @param args the command line arguments
@@ -518,6 +642,7 @@ public class Juego extends javax.swing.JFrame {
     private javax.swing.JScrollPane Ranking;
     private javax.swing.JButton Salir;
     private javax.swing.JPanel SeleccionPersonajesMenu;
+    private javax.swing.JButton SeleccionarArmas;
     private javax.swing.JScrollPane Status;
     private javax.swing.JTextArea StatusText;
     private javax.swing.JLabel TituloArmas;
@@ -526,7 +651,10 @@ public class Juego extends javax.swing.JFrame {
     private javax.swing.JPanel attacked;
     private javax.swing.JButton btnSeleccionarPersonajes;
     private javax.swing.JTextArea consoltaEntry;
+    private javax.swing.JPanel panelArmas;
+    private javax.swing.JLabel personajeArmas;
     private javax.swing.JTextArea rankingText;
+    private javax.swing.JScrollPane scrollArmas;
     private javax.swing.JScrollPane scrollPersonajes;
     private javax.swing.JPanel scrollPersonajesPanel;
     private javax.swing.JLabel seleccionTitle;

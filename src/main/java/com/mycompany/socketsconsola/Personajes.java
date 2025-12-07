@@ -22,7 +22,7 @@ public class Personajes implements Serializable{
     
     //Armas:
     private transient Random random = new Random();;
-    private List<String> armas;
+    private List<Armas> armas;
     private List<List<Integer>> damages = new ArrayList<>();
 
     public String getNombre() {
@@ -37,7 +37,7 @@ public class Personajes implements Serializable{
         return imagen;
     }
 
-    public void setArmas(List<String> armas) {
+    public void setArmas(List<Armas> armas) {
         this.armas = armas;
     }
     
