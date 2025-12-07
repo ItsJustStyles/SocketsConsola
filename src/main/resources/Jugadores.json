@@ -1,3 +1,20 @@
-{
-    "name": "lacay"
-}
+[
+  {
+    "nombre": "Juan",
+    "wins": 5,
+    "loses": 2,
+    "attacks": 10,
+    "success": 7,
+    "failed": 3,
+    "giveup": 0
+  },
+  {
+    "nombre": "Maicol",
+    "wins": 3,
+    "loses": 4,
+    "attacks": 8,
+    "success": 4,
+    "failed": 4,
+    "giveup": 1
+  }
+]

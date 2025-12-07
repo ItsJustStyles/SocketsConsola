@@ -44,5 +44,46 @@ public class Jugador {
     public int getGiveup() {
         return giveup;
     }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public void setWins(int wins) {
+        this.wins = wins;
+    }
+
+    public void setLoses(int loses) {
+        this.loses = loses;
+    }
+
+    public void setAttacks(int attacks) {
+        this.attacks = attacks;
+    }
+
+    public void setSuccess(int success) {
+        this.success = success;
+    }
+
+    public void setFailed(int failed) {
+        this.failed = failed;
+    }
+
+    public void setGiveup(int giveup) {
+        this.giveup = giveup;
+    }
+    
+    @Override
+    public String toString() {
+        return "Jugador{" +
+                "nombre='" + nombre + '\'' +
+                ", wins=" + wins +
+                ", loses=" + loses +
+                ", attacks=" + attacks +
+                ", success=" + success +
+                ", failed=" + failed +
+                ", giveup=" + giveup +
+                '}';
+    }
     
 }

@@ -53,7 +53,6 @@ public class GestorJson {
             return Collections.emptyList();
         }
         try(Reader reader = new InputStreamReader(stream)){
-
             Gson gson = new Gson();
         
             Type listType = new TypeToken<List<Jugador>>() {}.getType();
@@ -64,6 +63,111 @@ public class GestorJson {
             System.err.println("Error al procesar el JSON: " + e.getMessage());
             e.printStackTrace();
             return Collections.emptyList();
+        }
+    }
+    private static void guardarJugadores(List<Jugador> jugadores) {
+    try {
+        // Obtener la ruta real del archivo en resources
+        String ruta = GestorJson.class.getResource(ARCHIVO2).getPath();
+
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
+        try (FileWriter writer = new FileWriter(ruta)) {
+            gson.toJson(jugadores, writer);
+        }
+    } catch (IOException e) {
+        System.err.println("Error al guardar el JSON: " + e.getMessage());
+        e.printStackTrace();
+    }
+    }
+    
+    // Buscar jugador por nombre
+    private static Jugador buscarJugador(List<Jugador> jugadores, String nombre) {
+        for (Jugador j : jugadores) {
+            if (j.getNombre().equalsIgnoreCase(nombre)) {
+                return j;
+            }
+        }
+        return null;
+    }
+    
+    // Métodos para incrementar atributos
+    
+    public static void incrementarWins(String nombreJugador, int cantidad) {
+        List<Jugador> jugadores = cargarJugador();
+        Jugador jugador = buscarJugador(jugadores, nombreJugador);
+        
+        if (jugador != null) {
+            jugador.setWins(jugador.getWins() + cantidad);
+            guardarJugadores(jugadores);
+            System.out.println("Wins actualizado para " + nombreJugador);
+        } else {
+            System.err.println("Jugador no encontrado: " + nombreJugador);
+        }
+    }
+    
+    public static void incrementarLoses(String nombreJugador, int cantidad) {
+        List<Jugador> jugadores = cargarJugador();
+        Jugador jugador = buscarJugador(jugadores, nombreJugador);
+        
+        if (jugador != null) {
+            jugador.setLoses(jugador.getLoses() + cantidad);
+            guardarJugadores(jugadores);
+            System.out.println("Loses actualizado para " + nombreJugador);
+        } else {
+            System.err.println("Jugador no encontrado: " + nombreJugador);
+        }
+    }
+    
+    public static void incrementarAttacks(String nombreJugador, int cantidad) {
+        List<Jugador> jugadores = cargarJugador();
+        Jugador jugador = buscarJugador(jugadores, nombreJugador);
+        
+        if (jugador != null) {
+            jugador.setAttacks(jugador.getAttacks() + cantidad);
+            guardarJugadores(jugadores);
+            System.out.println("Attacks actualizado para " + nombreJugador);
+        } else {
+            System.err.println("Jugador no encontrado: " + nombreJugador);
+        }
+    }
+    
+    public static void incrementarSuccess(String nombreJugador, int cantidad) {
+        List<Jugador> jugadores = cargarJugador();
+        Jugador jugador = buscarJugador(jugadores, nombreJugador);
+        
+        if (jugador != null) {
+            jugador.setSuccess(jugador.getSuccess() + cantidad);
+            guardarJugadores(jugadores);
+            System.out.println("Success actualizado para " + nombreJugador);
+        } else {
+            System.err.println("Jugador no encontrado: " + nombreJugador);
+        }
+    }
+    
+    public static void incrementarFailed(String nombreJugador, int cantidad) {
+        List<Jugador> jugadores = cargarJugador();
+        Jugador jugador = buscarJugador(jugadores, nombreJugador);
+        
+        if (jugador != null) {
+            jugador.setFailed(jugador.getFailed() + cantidad);
+            guardarJugadores(jugadores);
+            System.out.println("Failed actualizado para " + nombreJugador);
+        } else {
+            System.err.println("Jugador no encontrado: " + nombreJugador);
+        }
+    }
+    
+    public static void incrementarGiveup(String nombreJugador, int cantidad) {
+        List<Jugador> jugadores = cargarJugador();
+        Jugador jugador = buscarJugador(jugadores, nombreJugador);
+        
+        if (jugador != null) {
+            jugador.setGiveup(jugador.getGiveup() + cantidad);
+            guardarJugadores(jugadores);
+            System.out.println("Giveup actualizado para " + nombreJugador);
+        } else {
+            System.err.println("Jugador no encontrado: " + nombreJugador);
         }
     }
     
@@ -92,5 +196,6 @@ public class GestorJson {
             return Collections.emptyMap();
         }
     }
+    
   
 }
