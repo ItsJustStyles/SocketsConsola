@@ -22,6 +22,9 @@ public class CommandFactory {
                 return new CommandRendirse(args);
             case "SELECCIONARJUGADOR":
                 return new CommandSeleccionarJugador(args);
+            case "PASARTURNO":
+                return new CommandPasarTurno(args);
+                
             default:
                 return null;
         }

@@ -21,7 +21,8 @@ public enum CommandType {
     TEAM(0),
     LOBBY(0),
     SELECCIONARJUGADOR(2),
-    ENVIARHEROES(0);        
+    ENVIARHEROES(0),
+    PASARTURNO(0);        
     
     private final int requiredParameters;
 
