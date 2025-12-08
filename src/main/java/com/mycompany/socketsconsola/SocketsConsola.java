@@ -4,6 +4,8 @@
 
 package com.mycompany.socketsconsola;
 
+import java.util.List;
+
 /**
  *
  * @author lacay
@@ -11,6 +13,6 @@ package com.mycompany.socketsconsola;
 public class SocketsConsola {
 
     public static void main(String[] args) {
-        System.out.println("Hello World!");
+        System.out.println("ola");
     }
 }

@@ -13,6 +13,7 @@ import java.util.*;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
+import java.net.URL;
 /**
  *
  * @author lacay
@@ -66,21 +67,46 @@ public class GestorJson {
         }
     }
     private static void guardarJugadores(List<Jugador> jugadores) {
-    try {
-        // Obtener la ruta real del archivo en resources
-        String ruta = GestorJson.class.getResource(ARCHIVO2).getPath();
+        try {
+            URL resourceUrl = GestorJson.class.getResource(ARCHIVO2);
 
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            if (resourceUrl == null) {
+                System.err.println("Error: No se puede encontrar el archivo");
+                return;
+            }
 
-        try (FileWriter writer = new FileWriter(ruta)) {
-            gson.toJson(jugadores, writer);
+            String rutaTarget = resourceUrl.getPath();
+            rutaTarget = java.net.URLDecoder.decode(rutaTarget, "UTF-8");
+
+            if (rutaTarget.startsWith("/") && rutaTarget.contains(":")) {
+                rutaTarget = rutaTarget.substring(1);
+            }
+
+            String rutaSrc = rutaTarget.replace("target/classes", "src/main/resources");
+
+            File fileSrc = new File(rutaSrc);
+            File fileTarget = new File(rutaTarget);
+
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            String json = gson.toJson(jugadores);
+
+            try (FileWriter writer = new FileWriter(fileSrc)) {
+                writer.write(json);
+                writer.flush();
+            }
+
+            try (FileWriter writer = new FileWriter(fileTarget)) {
+                writer.write(json);
+                writer.flush();
+            }
+
+            System.out.println("JSON guardado en ambas ubicaciones");
+
+        } catch (Exception e) {
+            System.err.println("Error al guardar el JSON: " + e.getMessage());
+            e.printStackTrace();
         }
-    } catch (IOException e) {
-        System.err.println("Error al guardar el JSON: " + e.getMessage());
-        e.printStackTrace();
     }
-    }
-    
     // Buscar jugador por nombre
     private static Jugador buscarJugador(List<Jugador> jugadores, String nombre) {
         for (Jugador j : jugadores) {
@@ -169,6 +195,29 @@ public class GestorJson {
         } else {
             System.err.println("Jugador no encontrado: " + nombreJugador);
         }
+    }
+    public static void agregarJugador(String nombre) {
+        List<Jugador> jugadores = cargarJugador();
+
+        if (buscarJugador(jugadores, nombre) != null) {
+            System.err.println("El jugador '" + nombre + "' ya existe en el sistema");
+            return;
+        }
+
+        Jugador nuevoJugador = new Jugador();
+        nuevoJugador.setNombre(nombre);
+        nuevoJugador.setWins(0);
+        nuevoJugador.setLoses(0);
+        nuevoJugador.setAttacks(0);
+        nuevoJugador.setSuccess(0);
+        nuevoJugador.setFailed(0);
+        nuevoJugador.setGiveup(0);
+
+        jugadores.add(nuevoJugador);
+
+        guardarJugadores(jugadores);
+
+        System.out.println("Jugador '" + nombre + "' agregado exitosamente");
     }
     
     public static Map<String, List<Armas>> cargarCatalogoArmas() {

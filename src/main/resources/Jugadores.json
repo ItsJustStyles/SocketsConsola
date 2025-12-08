@@ -1,7 +1,7 @@
 [
   {
     "nombre": "Juan",
-    "wins": 5,
+    "wins": 10,
     "loses": 2,
     "attacks": 10,
     "success": 7,
@@ -12,9 +12,36 @@
     "nombre": "Maicol",
     "wins": 3,
     "loses": 4,
-    "attacks": 8,
-    "success": 4,
-    "failed": 4,
+    "attacks": 13,
+    "success": 7,
+    "failed": 6,
     "giveup": 1
+  },
+  {
+    "nombre": "Carlos",
+    "wins": 0,
+    "loses": 0,
+    "attacks": 0,
+    "success": 0,
+    "failed": 0,
+    "giveup": 0
+  },
+  {
+    "nombre": "TestUser",
+    "wins": 0,
+    "loses": 0,
+    "attacks": 0,
+    "success": 0,
+    "failed": 0,
+    "giveup": 0
+  },
+  {
+    "nombre": "Prueba_1765161055798",
+    "wins": 0,
+    "loses": 0,
+    "attacks": 0,
+    "success": 0,
+    "failed": 0,
+    "giveup": 0
   }
 ]
