@@ -17,12 +17,12 @@
     {
     "nombre": "Pikachu",
     "tipo": "Electricidad",
-    "imagen": "/Imagenes/Personajes/pikachu.jpg"
+    "imagen": "/Imagenes/Personajes/pikachu.png"
     },
     {
     "nombre": "Gengar",
     "tipo": "Magia negra",
-    "imagen": "/Imagenes/Personajes/gengar.jpg"
+    "imagen": "/Imagenes/Personajes/gengar.png"
     },
     {
     "nombre": "Juan",
