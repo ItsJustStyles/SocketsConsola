@@ -20,6 +20,8 @@ public class Personajes implements Serializable{
     private String tipo;
     private String imagen;
     
+    private int vida = 100;
+    
     //Armas:
     private transient Random random = new Random();;
     private List<Armas> armas;
@@ -59,4 +61,15 @@ public class Personajes implements Serializable{
     public List<List<Integer>> getDamages() {
         return damages;
     }
+    
+    public void recibirDano(int dano){
+        vida -= dano;
+    }
+
+    public int getVida() {
+        return vida;
+    }
+    
+    
+    
 }

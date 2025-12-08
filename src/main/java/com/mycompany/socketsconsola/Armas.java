@@ -17,6 +17,7 @@ public class Armas implements Serializable{
     private String nombre;
     private String tipo_arma;
     private String imagen;
+    private String nombreSecundario;
     
     public Armas() {
     }
@@ -32,5 +33,8 @@ public class Armas implements Serializable{
     public String getImagen() {
         return imagen;
     }
-    
+
+    public String getNombreSecundario() {
+        return nombreSecundario;
+    }
 }

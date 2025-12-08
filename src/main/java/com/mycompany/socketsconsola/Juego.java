@@ -136,14 +136,17 @@ public class Juego extends javax.swing.JFrame {
         attacked.setBounds(200, 0, 400, 345);
         attack.setBounds(200, 345, 400, 345);
         team.setBounds(600, 0, 600, 690);
-        bitacoraScroll.setBounds(1200, 0, 300, 345);
+        bitacoraScroll.setBounds(1200, 0, 295, 345);
         comodin.setBounds(1200, 345, 300, 345);
+        bitacora.setLineWrap(true);
+        bitacora.setWrapStyleWord(true);
         //Mapa - team:
         yourTeam.setBounds(10, 10, 79, 18);
         teamSeleccionado.setBounds(0, 30, 650, 330);
         armasPorPersonaje.setBounds(0, 360, 650, 330);
         //Mapa - armas:
-        arma1.setBounds(10, 30, 600, 15);
+        nombreVidaPersonaje.setBounds(10, 10, 300, 15);
+        arma1.setBounds(10, 36, 600, 15);
         arma2.setBounds(10, 96, 600, 15);
         arma3.setBounds(10, 162, 600, 15);
         arma4.setBounds(10, 228, 600, 15);
@@ -164,6 +167,7 @@ public class Juego extends javax.swing.JFrame {
     
     public void iniciarComodin(){
         JPanelImage miImagen = new JPanelImage(contenedorComodin,"/Imagenes/Comodin/ComodinNeutral.png");
+        contenedorComodin.removeAll();
         contenedorComodin.add(miImagen);
         contenedorComodin.repaint();
         contenedorComodin.getParent().repaint();
@@ -178,6 +182,7 @@ public class Juego extends javax.swing.JFrame {
             rutaNuevoComodin = "/Imagenes/Comodin/ComodinNegativo.png";
         }
         JPanelImage miImagen = new JPanelImage(contenedorComodin, rutaNuevoComodin);
+        contenedorComodin.removeAll();
         contenedorComodin.add(miImagen);
         contenedorComodin.repaint();
         contenedorComodin.getParent().repaint();
@@ -504,7 +509,8 @@ public class Juego extends javax.swing.JFrame {
             List<List<Integer>> a = p.getDamages();
 
             List<Integer> damageArma1 = a.get(0);
-
+            
+            nombreVidaPersonaje.setText(p.getNombre() + " " + p.getVida());
             arma1.setText(p.getArmas().get(0).getNombre() + ": "
                           + damageArma1.get(0) + " "
                           + damageArma1.get(1) + " "
@@ -734,6 +740,51 @@ public class Juego extends javax.swing.JFrame {
         dialog.setVisible(true);
     }
     
+    public void mostrarDerrota() {
+        JDialog dialog = new JDialog(this, "Derrota", true);
+        dialog.setSize(350, 180);
+        dialog.setLocationRelativeTo(this);
+        dialog.setLayout(new BorderLayout());
+
+        JLabel lbl = new JLabel("Has sido eliminado️", SwingConstants.CENTER);
+        lbl.setFont(new Font("Arial", Font.BOLD, 18));
+
+        JButton btn = new JButton("Aceptar");
+        btn.addActionListener(e -> dialog.dispose());
+
+        dialog.add(lbl, BorderLayout.CENTER);
+        dialog.add(btn, BorderLayout.SOUTH);
+
+        dialog.setVisible(true);
+    }
+    
+    public boolean haMuerto(){
+        for(Personajes p : heroesElegidos){
+            if(p.getVida() > 0){
+                return false;
+            }
+        }
+        
+        return true;
+    }
+    
+    public boolean recibirAtaque(int damage){
+        List<Personajes> heroesVivos = new ArrayList<>();;
+        for(Personajes p : heroesElegidos){
+            if(p.getVida() > 0){
+                heroesVivos.add(p);
+            }
+        }
+        
+        int indexDano = random.nextInt(heroesVivos.size());
+        heroesVivos.get(indexDano).recibirDano(damage);
+        
+        if(nombreVidaPersonaje.getText().contains(heroesVivos.get(indexDano).getNombre())){
+            nombreVidaPersonaje.setText(heroesVivos.get(indexDano).getNombre() + " " + heroesVivos.get(indexDano).getVida());
+        }
+        return true;
+    }
+    
     //Comandos:
     public void verJugadores(List<Personajes> heroesJugador){
 
@@ -822,6 +873,7 @@ public class Juego extends javax.swing.JFrame {
         arma3 = new javax.swing.JLabel();
         arma4 = new javax.swing.JLabel();
         arma5 = new javax.swing.JLabel();
+        nombreVidaPersonaje = new javax.swing.JLabel();
         consola = new javax.swing.JTextField();
         bitacoraScroll = new javax.swing.JScrollPane();
         bitacora = new javax.swing.JTextArea();
@@ -1021,6 +1073,11 @@ public class Juego extends javax.swing.JFrame {
         arma5.setText("jLabel5");
         armasPorPersonaje.add(arma5);
         arma5.setBounds(21, 229, 100, 15);
+
+        nombreVidaPersonaje.setFont(new java.awt.Font("Unispace", 0, 14)); // NOI18N
+        nombreVidaPersonaje.setText("Hola xd");
+        armasPorPersonaje.add(nombreVidaPersonaje);
+        nombreVidaPersonaje.setBounds(0, 0, 62, 18);
 
         team.add(armasPorPersonaje);
         armasPorPersonaje.setBounds(6, 278, 305, 0);
@@ -1315,6 +1372,7 @@ public class Juego extends javax.swing.JFrame {
     private javax.swing.JPanel lobby;
     private javax.swing.JScrollPane lobbyScroll;
     private javax.swing.JTextArea lobbyText;
+    private javax.swing.JLabel nombreVidaPersonaje;
     private javax.swing.JPanel panelArmas;
     private javax.swing.JLabel personajeArmas;
     private javax.swing.JTextArea rankingText;

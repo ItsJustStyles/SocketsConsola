@@ -16,6 +16,7 @@ public class CommandFactory {
         
         switch (type) {
             case "ATAQUE":
+                return new CommandAttack(args);
             case "NAME":
                 return new CommandName(args);
             case "RENDIRSE":
@@ -26,6 +27,10 @@ public class CommandFactory {
                 return new CommandPasarTurno(args);
             case "USARCOMODIN":
                 return new CommandUsarComodin(args);
+            case "CHAT":
+                return new CommandChat(args);
+            case "CHATPRIVADO":
+                return new CommandChatPrivado(args);
             default:
                 return null;
         }

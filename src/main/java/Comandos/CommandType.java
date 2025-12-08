@@ -10,7 +10,8 @@ package Comandos;
  */
 public enum CommandType {
     UNICAST(2),
-    ATAQUE(5),              // attack Andres 4 5
+    ATAQUE(4),              // attack Andres 4 5
+    HIT(0),
     MESSAGE(2),             // message hola a todos
     PRIVATE_MESSAGE(3),     // private Andres hola andres
     RENDIRSE(1),            // giveup
@@ -24,7 +25,9 @@ public enum CommandType {
     SELECCIONARJUGADOR(2),
     ENVIARHEROES(0),
     PASARTURNO(0),
-    USARCOMODIN(0);        
+    USARCOMODIN(0),
+    CHAT(2),
+    CHAT_PRIVADO(3);        
     
     private final int requiredParameters;
 

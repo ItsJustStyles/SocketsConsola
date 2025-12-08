@@ -5,12 +5,14 @@
 package Servidor;
 
 import Comandos.Command;
+import com.mycompany.socketsconsola.Armas;
 import com.mycompany.socketsconsola.Personajes;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.List;
+import java.util.Random;
 
 /**
  *
@@ -28,6 +30,8 @@ public class ThreadServidor extends Thread {
     public boolean isActive = true;
     public boolean isRunning = true;
     public List<Personajes> heroes;
+    
+    private Random random = new Random();
 
     public ThreadServidor(Server server, Socket socket) {
         try {
@@ -71,4 +75,49 @@ public class ThreadServidor extends Thread {
     public void showAllClients() {
         this.server.showAllNames();
     }
+    
+    public boolean esPersonajeValido(String nombrePersonaje) {
+        for (Personajes heroe : heroes) {
+            if (heroe.getNombre().equals(nombrePersonaje)) {
+                return true; 
+            }
+        }
+        return false;
+    }
+    
+    public boolean esArmaValida(String arma, String personaje){
+        Personajes p = null;
+        for(Personajes heroe: heroes){
+            if (heroe.getNombre().equals(personaje)) {
+                p = heroe;
+                break;
+            }
+        }
+        List<Armas> armasHeroe = p.getArmas();
+        for(Armas a : armasHeroe){
+            if(a.getNombre().equals(arma.toLowerCase()) || a.getNombreSecundario().equals(arma.toLowerCase())){
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public int obtenerDano(String arma, String personaje){
+        List<List<Integer>> danos = null;
+        int indexDamage = 0;
+        
+        int i = 0;
+        for(Personajes heroe: heroes){
+            if (heroe.getNombre().equals(personaje)) {
+                danos = heroe.getDamages();
+                indexDamage = i;
+                break;
+            }
+            i++;
+        }
+        
+        List<Integer> danoArmaSeleccionada = danos.get(indexDamage);
+        return danoArmaSeleccionada.get(random.nextInt(10));
+    }
+    
 }
