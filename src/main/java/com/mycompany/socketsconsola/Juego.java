@@ -85,7 +85,8 @@ public class Juego extends javax.swing.JFrame {
     private Border bordeSeleccionado = BorderFactory.createLineBorder(Color.YELLOW, 3); 
     private Border bordeNormal = null; 
     
-    public SonidoMenu menuPersonajes = new SonidoMenu("/Musica/BalatroMainTheme.wav");;
+    public SonidoMenu menuPersonajes = new SonidoMenu("/Musica/BalatroMainTheme.wav");
+    private JPanelImage fondoActual = null;
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Juego.class.getName());
     
@@ -235,8 +236,63 @@ public class Juego extends javax.swing.JFrame {
     }
     
     private void colocarFondos(){
-        JPanelImage miImagen = new JPanelImage(MenuInicio,"/Imagenes/Fondos/DeadWoods.jpg");
-        MenuInicio.add(miImagen).repaint();
+        JPanelImage DeadWoods = new JPanelImage(MenuInicio,"/Imagenes/Fondos/DeadWoods.jpg");
+        JPanelImage Pergamino = new JPanelImage(MenuInicio,"/Imagenes/Fondos/Pergamino.jpg");
+        MenuInicio.add(DeadWoods).repaint();
+        SeleccionPersonajesMenu.add(Pergamino).repaint();
+    }
+    
+    private void colocarFondosArmas(int indexArma){
+        // Si ya existe un fondo, eliminarlo
+        if (fondoActual != null) {
+            MenuArmas.remove(fondoActual);
+        }
+
+        String tipo = heroesElegidos.get(indexArma).getTipo().toLowerCase();
+        System.out.println(tipo);
+
+        switch (tipo) {
+            case "fuego":
+                fondoActual = new JPanelImage(MenuInicio, "/Imagenes/Fondos/Fuego.jpeg");
+                break;
+            case "aire":
+                fondoActual = new JPanelImage(MenuInicio, "/Imagenes/Fondos/Aire.jpg");
+                break;
+            case "agua":
+                fondoActual = new JPanelImage(MenuInicio, "/Imagenes/Fondos/Agua.jpg");
+                break;
+            case "magia blanca":
+                fondoActual = new JPanelImage(MenuInicio, "/Imagenes/Fondos/MagiaBlanca.jpg");
+                break;
+            case "magia negra":
+                fondoActual = new JPanelImage(MenuInicio, "/Imagenes/Fondos/MagiaNegra.jpg");
+                break;
+            case "electricidad":
+                fondoActual = new JPanelImage(MenuInicio, "/Imagenes/Fondos/Electricidad.jpg");
+                break;
+            case "hielo":
+                fondoActual = new JPanelImage(MenuInicio, "/Imagenes/Fondos/Hielo.jpg");
+                break;
+            case "acid":
+                fondoActual = new JPanelImage(MenuInicio, "/Imagenes/Fondos/Acid.png");
+                break;
+            case "espiritualidad":
+                fondoActual = new JPanelImage(MenuInicio, "/Imagenes/Fondos/Espiritualidad.jpg");
+                break;
+            case "hierro":
+                fondoActual = new JPanelImage(MenuInicio, "/Imagenes/Fondos/Hierro.jpg");
+                break;
+            default:
+                fondoActual = new JPanelImage(MenuInicio, "/Imagenes/Fondos/Pergamino.jpg");
+                break;
+        }
+
+
+        MenuArmas.add(fondoActual, 0);
+        MenuArmas.setComponentZOrder(fondoActual, MenuArmas.getComponentCount() - 1);
+
+        MenuArmas.revalidate();
+        MenuArmas.repaint();
     }
     
     private void cargarPersonajesEnScrollPanel(){
@@ -793,7 +849,7 @@ public class Juego extends javax.swing.JFrame {
         getContentPane().setLayout(new java.awt.CardLayout());
 
         MenuInicio.setMinimumSize(new java.awt.Dimension(1200, 800));
-        MenuInicio.setPreferredSize(new java.awt.Dimension(1400, 800));
+        MenuInicio.setPreferredSize(new java.awt.Dimension(1500, 800));
         MenuInicio.setLayout(null);
 
         TituloMenu.setFont(new java.awt.Font("Unispace", 0, 24)); // NOI18N
@@ -832,7 +888,9 @@ public class Juego extends javax.swing.JFrame {
 
         scrollPersonajes.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPersonajes.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+        scrollPersonajes.setOpaque(false);
 
+        scrollPersonajesPanel.setOpaque(false);
         scrollPersonajesPanel.setLayout(new java.awt.GridLayout(0, 3, 5, 25));
         scrollPersonajes.setViewportView(scrollPersonajesPanel);
 
@@ -1134,6 +1192,7 @@ public class Juego extends javax.swing.JFrame {
         }
         cargarArmasenScroll(indexArma);
         caragrTeam();
+        colocarFondosArmas(indexArma);
         cardLayout = (CardLayout) (getContentPane().getLayout());
         cardLayout.show(getContentPane(), "card5");
     }//GEN-LAST:event_btnSeleccionarPersonajesActionPerformed
@@ -1155,6 +1214,7 @@ public class Juego extends javax.swing.JFrame {
             cardLayout = (CardLayout) (getContentPane().getLayout());
             cardLayout.show(getContentPane(), "card7");
         }else{
+            colocarFondosArmas(indexArma);
             cargarArmasenScroll(indexArma);
         }
     }//GEN-LAST:event_SeleccionarArmasActionPerformed
