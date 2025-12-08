@@ -259,33 +259,53 @@ public class Juego extends javax.swing.JFrame {
         switch (tipo) {
             case "fuego":
                 fondoActual = new JPanelImage(MenuInicio, "/Imagenes/Fondos/Fuego.jpeg");
+                TituloArmas.setForeground(Color.white);
+                personajeArmas.setForeground(Color.white);
                 break;
             case "aire":
                 fondoActual = new JPanelImage(MenuInicio, "/Imagenes/Fondos/Aire.jpg");
+                TituloArmas.setForeground(Color.white);
+                personajeArmas.setForeground(Color.white);
                 break;
             case "agua":
                 fondoActual = new JPanelImage(MenuInicio, "/Imagenes/Fondos/Agua.jpg");
+                TituloArmas.setForeground(Color.white);
+                personajeArmas.setForeground(Color.white);
                 break;
             case "magia blanca":
                 fondoActual = new JPanelImage(MenuInicio, "/Imagenes/Fondos/MagiaBlanca.jpg");
+                TituloArmas.setForeground(Color.black);
+                personajeArmas.setForeground(Color.black);
                 break;
             case "magia negra":
                 fondoActual = new JPanelImage(MenuInicio, "/Imagenes/Fondos/MagiaNegra.jpg");
+                TituloArmas.setForeground(Color.white);
+                personajeArmas.setForeground(Color.white);
                 break;
             case "electricidad":
                 fondoActual = new JPanelImage(MenuInicio, "/Imagenes/Fondos/Electricidad.jpg");
+                TituloArmas.setForeground(Color.white);
+                personajeArmas.setForeground(Color.white);
                 break;
             case "hielo":
                 fondoActual = new JPanelImage(MenuInicio, "/Imagenes/Fondos/Hielo.jpg");
+                TituloArmas.setForeground(Color.black);
+                personajeArmas.setForeground(Color.black);
                 break;
             case "acid":
                 fondoActual = new JPanelImage(MenuInicio, "/Imagenes/Fondos/Acid.png");
+                TituloArmas.setForeground(Color.white);
+                personajeArmas.setForeground(Color.white);
                 break;
             case "espiritualidad":
                 fondoActual = new JPanelImage(MenuInicio, "/Imagenes/Fondos/Espiritualidad.jpg");
+                TituloArmas.setForeground(Color.white);
+                personajeArmas.setForeground(Color.white);
                 break;
             case "hierro":
                 fondoActual = new JPanelImage(MenuInicio, "/Imagenes/Fondos/Hierro.jpg");
+                TituloArmas.setForeground(Color.white);
+                personajeArmas.setForeground(Color.white);
                 break;
             default:
                 fondoActual = new JPanelImage(MenuInicio, "/Imagenes/Fondos/Pergamino.jpg");
