@@ -9,6 +9,7 @@ package Comandos;
  * @author lacay
  */
 public enum CommandType {
+    UNICAST(2),
     ATAQUE(5),              // attack Andres 4 5
     MESSAGE(2),             // message hola a todos
     PRIVATE_MESSAGE(3),     // private Andres hola andres
@@ -22,7 +23,8 @@ public enum CommandType {
     LOBBY(0),
     SELECCIONARJUGADOR(2),
     ENVIARHEROES(0),
-    PASARTURNO(0);        
+    PASARTURNO(0),
+    USARCOMODIN(0);        
     
     private final int requiredParameters;
 

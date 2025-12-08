@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -49,6 +50,7 @@ import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
+import javax.swing.Timer;
 import javax.swing.border.Border;
 
 /**
@@ -56,7 +58,7 @@ import javax.swing.border.Border;
  * @author lacay
  */
 public class Juego extends javax.swing.JFrame {
-    
+    private Random random = new Random();
     private List<Personajes> todosLosPersonajes;
     private List<Personajes> heroesElegidos;
     private Map<String, List<Armas>> catalogoArmas;
@@ -65,7 +67,7 @@ public class Juego extends javax.swing.JFrame {
     Client cliente;
     
     private int alto = 800;
-    private int ancho = 1400;
+    private int ancho = 1500;
     private CardLayout cardLayout = new CardLayout();
     
     private final GraphicsDevice graphicsDevice = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
@@ -83,11 +85,15 @@ public class Juego extends javax.swing.JFrame {
     private Border bordeSeleccionado = BorderFactory.createLineBorder(Color.YELLOW, 3); 
     private Border bordeNormal = null; 
     
-    public SonidoMenu menuPersonajes = new SonidoMenu("/Musica/BalatroMainTheme.wav");
-    private JPanelImage fondoActual = null;
+    public SonidoMenu menuPersonajes = new SonidoMenu("/Musica/BalatroMainTheme.wav");;
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Juego.class.getName());
-
+    
+    private int tiempoRestanteSegundos = 300;
+    private Timer swingTimer;
+    
+    private boolean comodinTipo = true;
+    private boolean comodinDesbloqueado = false;
     /**
      * Creates new form Juego
      */
@@ -108,6 +114,8 @@ public class Juego extends javax.swing.JFrame {
         this.todosLosPersonajes = GestorJson.cargarPersonajes();
         this.catalogoArmas = GestorJson.cargarCatalogoArmas();
         cargarPersonajesEnScrollPanel();
+        
+        iniciarComodin();
     }
     
     private void iniciarElementos(int newAncho, int newAlto){
@@ -120,13 +128,15 @@ public class Juego extends javax.swing.JFrame {
         scrollPersonajes.setBounds((newAncho - 600)/2, 100, 600, 600);
         btnSeleccionarPersonajes.setBounds((newAncho - 191)/2, 720, 191, 27);
         //Mapa:
-        Ranking.setBounds(0, 0, 250, 230);
-        Against.setBounds(0, 230, 250, 230);
-        Status.setBounds(0, 460, 250, 230);
-        consola.setBounds(0, 690, 1400, 110);
-        attacked.setBounds(250, 0, 500, 345);
-        attack.setBounds(250, 345, 500, 345);
-        team.setBounds(750, 0, 650, 690);
+        Ranking.setBounds(0, 0, 200, 230);
+        Against.setBounds(0, 230, 200, 230);
+        Status.setBounds(0, 460, 200, 230);
+        consola.setBounds(0, 690, 1500, 77);
+        attacked.setBounds(200, 0, 400, 345);
+        attack.setBounds(200, 345, 400, 345);
+        team.setBounds(600, 0, 600, 690);
+        bitacoraScroll.setBounds(1200, 0, 300, 345);
+        comodin.setBounds(1200, 345, 300, 345);
         //Mapa - team:
         yourTeam.setBounds(10, 10, 79, 18);
         teamSeleccionado.setBounds(0, 30, 650, 330);
@@ -137,6 +147,9 @@ public class Juego extends javax.swing.JFrame {
         arma3.setBounds(10, 162, 600, 15);
         arma4.setBounds(10, 228, 600, 15);
         arma5.setBounds(10, 294, 600, 15);
+        //Mapa - comodin:
+        contenedorComodin.setBounds((300 - 250)/2, 0, 250, 300);
+        tempComodin.setBounds((300 - 100)/2, 315, 100, 15);
         //Armas:
         TituloArmas.setBounds((newAncho - 187)/2, 30, 187, 29);
         SeleccionarArmas.setBounds((newAncho - 220)/2, 720, 220, 30);
@@ -148,63 +161,82 @@ public class Juego extends javax.swing.JFrame {
         
     }
     
-    private void colocarFondos(){
-        JPanelImage DeadWoods = new JPanelImage(MenuInicio,"/Imagenes/Fondos/DeadWoods.jpg");
-        JPanelImage Pergamino = new JPanelImage(MenuInicio,"/Imagenes/Fondos/Pergamino.jpg");
-        MenuInicio.add(DeadWoods).repaint();
-        SeleccionPersonajesMenu.add(Pergamino).repaint();
+    public void iniciarComodin(){
+        JPanelImage miImagen = new JPanelImage(contenedorComodin,"/Imagenes/Comodin/ComodinNeutral.png");
+        contenedorComodin.add(miImagen);
+        contenedorComodin.repaint();
+        contenedorComodin.getParent().repaint();
+        temporizadorComodin();
     }
-    private void colocarFondosArmas(int indexArma){
-        // Si ya existe un fondo, eliminarlo
-        if (fondoActual != null) {
-            MenuArmas.remove(fondoActual);
+    
+    public void actualizarComodin(){
+        String rutaNuevoComodin;
+        if(comodinTipo){
+            rutaNuevoComodin = "/Imagenes/Comodin/ComodinPositivo.png";
+        }else{
+            rutaNuevoComodin = "/Imagenes/Comodin/ComodinNegativo.png";
         }
-
-        String tipo = heroesElegidos.get(indexArma).getTipo().toLowerCase();
-        System.out.println(tipo);
-
-    switch (tipo) {
-        case "fuego":
-            fondoActual = new JPanelImage(MenuInicio, "/Imagenes/Fondos/Fuego.jpeg");
-            break;
-        case "aire":
-            fondoActual = new JPanelImage(MenuInicio, "/Imagenes/Fondos/Aire.jpg");
-            break;
-        case "agua":
-            fondoActual = new JPanelImage(MenuInicio, "/Imagenes/Fondos/Agua.jpg");
-            break;
-        case "magia blanca":
-            fondoActual = new JPanelImage(MenuInicio, "/Imagenes/Fondos/MagiaBlanca.jpeg");
-            break;
-        case "magia negra":
-            fondoActual = new JPanelImage(MenuInicio, "/Imagenes/Fondos/MagiaNegra.jpg");
-            break;
-        case "electricidad":
-            fondoActual = new JPanelImage(MenuInicio, "/Imagenes/Fondos/Electricidad.jpeg");
-            break;
-        case "hielo":
-            fondoActual = new JPanelImage(MenuInicio, "/Imagenes/Fondos/Hielo.jpg");
-            break;
-        case "acid":
-            fondoActual = new JPanelImage(MenuInicio, "/Imagenes/Fondos/Acid.png");
-            break;
-        case "espiritualidad":
-            fondoActual = new JPanelImage(MenuInicio, "/Imagenes/Fondos/Espiritualidad.jpeg");
-            break;
-        case "hierro":
-            fondoActual = new JPanelImage(MenuInicio, "/Imagenes/Fondos/Hierro.jpg");
-            break;
-        default:
-            fondoActual = new JPanelImage(MenuInicio, "/Imagenes/Fondos/Pergamino.jpg");
-            break;
+        JPanelImage miImagen = new JPanelImage(contenedorComodin, rutaNuevoComodin);
+        contenedorComodin.add(miImagen);
+        contenedorComodin.repaint();
+        contenedorComodin.getParent().repaint();
+        temporizadorComodin();
     }
+    
+    public void escogerComodin(){
+        int tipo = random.nextInt(2);
+        if(tipo == 1){
+            comodinTipo = true;
+        }else{
+            comodinTipo = false;
+        }
+    }
+    
+    public boolean getComodinTipo(){
+        return comodinTipo;
+    }
+    
+    public boolean getComodinDesbloqueado(){
+        return comodinDesbloqueado;
+    }
+    
+    public void temporizadorComodin(){
+        this.tiempoRestanteSegundos = 0 * 60;
+        comodinDesbloqueado = false;
+        
+        tempComodin.setText(formatearTiempo(this.tiempoRestanteSegundos));
+        if (this.swingTimer != null && this.swingTimer.isRunning()) {
+            this.swingTimer.stop();
+        }
+        this.swingTimer = new Timer(1000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
 
+                tiempoRestanteSegundos--; 
 
-        MenuArmas.add(fondoActual, 0);
-        MenuArmas.setComponentZOrder(fondoActual, MenuArmas.getComponentCount() - 1);
+                tempComodin.setText(formatearTiempo(tiempoRestanteSegundos)); 
 
-        MenuArmas.revalidate();
-        MenuArmas.repaint();
+                if (tiempoRestanteSegundos <= 0) {
+                    swingTimer.stop(); // Detener el temporizador
+                    tempComodin.setText("¡DISPONIBLE!");
+                    comodinDesbloqueado = true;
+                    escogerComodin();
+                }
+            }
+        });
+    
+        this.swingTimer.start();
+    }
+    
+    private String formatearTiempo(int totalSegundos) {
+        int minutos = totalSegundos / 60;
+        int segundos = totalSegundos % 60;
+        return String.format("%d:%02d", minutos, segundos);
+    }
+    
+    private void colocarFondos(){
+        JPanelImage miImagen = new JPanelImage(MenuInicio,"/Imagenes/Fondos/DeadWoods.jpg");
+        MenuInicio.add(miImagen).repaint();
     }
     
     private void cargarPersonajesEnScrollPanel(){
@@ -614,6 +646,14 @@ public class Juego extends javax.swing.JFrame {
         lobbyText.setText("");
     }
     
+    public void writeBitacora(String msg){
+        bitacora.append(msg + "\n");
+    }
+    
+    public void writeConsola(String msg){
+        consola.setText(msg);
+    }
+    
     private void iniciarServer(){
         Server server = new Server(this);
         cliente = new Client(this, "Justin", heroesElegidos, 35500, "localhost");
@@ -727,6 +767,11 @@ public class Juego extends javax.swing.JFrame {
         arma4 = new javax.swing.JLabel();
         arma5 = new javax.swing.JLabel();
         consola = new javax.swing.JTextField();
+        bitacoraScroll = new javax.swing.JScrollPane();
+        bitacora = new javax.swing.JTextArea();
+        comodin = new javax.swing.JPanel();
+        contenedorComodin = new javax.swing.JPanel();
+        tempComodin = new javax.swing.JLabel();
         MenuArmas = new javax.swing.JPanel();
         TituloArmas = new javax.swing.JLabel();
         SeleccionarArmas = new javax.swing.JButton();
@@ -756,7 +801,7 @@ public class Juego extends javax.swing.JFrame {
         TituloMenu.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         TituloMenu.setText("Sockets");
         MenuInicio.add(TituloMenu);
-        TituloMenu.setBounds(180, 20, 110, 32);
+        TituloMenu.setBounds(180, 20, 110, 29);
 
         Jugar.setText("Jugar");
         Jugar.addActionListener(new java.awt.event.ActionListener() {
@@ -765,7 +810,7 @@ public class Juego extends javax.swing.JFrame {
             }
         });
         MenuInicio.add(Jugar);
-        Jugar.setBounds(160, 80, 76, 27);
+        Jugar.setBounds(160, 80, 72, 23);
 
         Salir.setText("Salir");
         Salir.addActionListener(new java.awt.event.ActionListener() {
@@ -774,7 +819,7 @@ public class Juego extends javax.swing.JFrame {
             }
         });
         MenuInicio.add(Salir);
-        Salir.setBounds(160, 150, 76, 27);
+        Salir.setBounds(160, 150, 72, 23);
 
         getContentPane().add(MenuInicio, "card2");
 
@@ -783,13 +828,11 @@ public class Juego extends javax.swing.JFrame {
         seleccionTitle.setFont(new java.awt.Font("Unispace", 0, 24)); // NOI18N
         seleccionTitle.setText("Selección jugadores");
         SeleccionPersonajesMenu.add(seleccionTitle);
-        seleccionTitle.setBounds(490, 30, 280, 32);
+        seleccionTitle.setBounds(490, 30, 280, 29);
 
         scrollPersonajes.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPersonajes.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
-        scrollPersonajes.setOpaque(true);
 
-        scrollPersonajesPanel.setOpaque(false);
         scrollPersonajesPanel.setLayout(new java.awt.GridLayout(0, 3, 5, 25));
         scrollPersonajes.setViewportView(scrollPersonajesPanel);
 
@@ -804,7 +847,7 @@ public class Juego extends javax.swing.JFrame {
             }
         });
         SeleccionPersonajesMenu.add(btnSeleccionarPersonajes);
-        btnSeleccionarPersonajes.setBounds(530, 750, 200, 30);
+        btnSeleccionarPersonajes.setBounds(530, 750, 200, 27);
 
         getContentPane().add(SeleccionPersonajesMenu, "card3");
 
@@ -833,6 +876,8 @@ public class Juego extends javax.swing.JFrame {
         Against.setBounds(0, 218, 250, 248);
 
         Status.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        Status.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        Status.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
 
         StatusText.setColumns(20);
         StatusText.setRows(5);
@@ -884,7 +929,7 @@ public class Juego extends javax.swing.JFrame {
         yourTeam.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         yourTeam.setText("Tu equipo");
         team.add(yourTeam);
-        yourTeam.setBounds(6, 6, 65, 19);
+        yourTeam.setBounds(6, 6, 79, 18);
 
         teamSeleccionado.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         teamSeleccionado.setLayout(new java.awt.GridLayout(0, 3));
@@ -897,37 +942,70 @@ public class Juego extends javax.swing.JFrame {
         arma1.setFont(new java.awt.Font("Unispace", 0, 12)); // NOI18N
         arma1.setText("jLabel1");
         armasPorPersonaje.add(arma1);
-        arma1.setBounds(21, 25, 100, 16);
+        arma1.setBounds(21, 25, 100, 15);
 
         arma2.setFont(new java.awt.Font("Unispace", 0, 12)); // NOI18N
         arma2.setText("jLabel2");
         armasPorPersonaje.add(arma2);
-        arma2.setBounds(21, 75, 100, 16);
+        arma2.setBounds(21, 75, 100, 15);
 
         arma3.setFont(new java.awt.Font("Unispace", 0, 12)); // NOI18N
         arma3.setText("jLabel3");
         armasPorPersonaje.add(arma3);
-        arma3.setBounds(21, 132, 100, 16);
+        arma3.setBounds(21, 132, 100, 15);
 
         arma4.setFont(new java.awt.Font("Unispace", 0, 12)); // NOI18N
         arma4.setText("jLabel4");
         armasPorPersonaje.add(arma4);
-        arma4.setBounds(21, 176, 100, 16);
+        arma4.setBounds(21, 176, 100, 15);
 
         arma5.setFont(new java.awt.Font("Unispace", 0, 12)); // NOI18N
         arma5.setText("jLabel5");
         armasPorPersonaje.add(arma5);
-        arma5.setBounds(21, 229, 100, 16);
+        arma5.setBounds(21, 229, 100, 15);
 
         team.add(armasPorPersonaje);
         armasPorPersonaje.setBounds(6, 278, 305, 0);
 
         Mapa.add(team);
         team.setBounds(883, 0, 0, 649);
-
-        consola.setText("jTextField1");
         Mapa.add(consola);
         consola.setBounds(10, 660, 850, 140);
+
+        bitacoraScroll.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+
+        bitacora.setColumns(20);
+        bitacora.setRows(5);
+        bitacoraScroll.setViewportView(bitacora);
+
+        Mapa.add(bitacoraScroll);
+        bitacoraScroll.setBounds(860, 10, 330, 340);
+
+        comodin.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        comodin.setLayout(null);
+
+        javax.swing.GroupLayout contenedorComodinLayout = new javax.swing.GroupLayout(contenedorComodin);
+        contenedorComodin.setLayout(contenedorComodinLayout);
+        contenedorComodinLayout.setHorizontalGroup(
+            contenedorComodinLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 243, Short.MAX_VALUE)
+        );
+        contenedorComodinLayout.setVerticalGroup(
+            contenedorComodinLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 151, Short.MAX_VALUE)
+        );
+
+        comodin.add(contenedorComodin);
+        contenedorComodin.setBounds(40, 20, 243, 151);
+
+        tempComodin.setFont(new java.awt.Font("Unispace", 0, 12)); // NOI18N
+        tempComodin.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        tempComodin.setText("jLabel2");
+        comodin.add(tempComodin);
+        tempComodin.setBounds(1010, 640, 50, 15);
+
+        Mapa.add(comodin);
+        comodin.setBounds(870, 390, 320, 220);
 
         getContentPane().add(Mapa, "card4");
 
@@ -936,7 +1014,7 @@ public class Juego extends javax.swing.JFrame {
         TituloArmas.setFont(new java.awt.Font("Unispace", 0, 24)); // NOI18N
         TituloArmas.setText("Escoger armas");
         MenuArmas.add(TituloArmas);
-        TituloArmas.setBounds(454, 59, 159, 32);
+        TituloArmas.setBounds(454, 59, 187, 29);
 
         SeleccionarArmas.setFont(new java.awt.Font("Unispace", 0, 18)); // NOI18N
         SeleccionarArmas.setText("Seleccionar armas");
@@ -946,7 +1024,7 @@ public class Juego extends javax.swing.JFrame {
             }
         });
         MenuArmas.add(SeleccionarArmas);
-        SeleccionarArmas.setBounds(510, 760, 230, 35);
+        SeleccionarArmas.setBounds(510, 760, 230, 30);
 
         scrollArmas.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         scrollArmas.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
@@ -961,7 +1039,7 @@ public class Juego extends javax.swing.JFrame {
         personajeArmas.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         personajeArmas.setText("Nombre: Juan");
         MenuArmas.add(personajeArmas);
-        personajeArmas.setBounds(560, 100, 90, 19);
+        personajeArmas.setBounds(560, 100, 106, 18);
 
         getContentPane().add(MenuArmas, "card5");
 
@@ -982,7 +1060,7 @@ public class Juego extends javax.swing.JFrame {
             }
         });
         lobby.add(Listo);
-        Listo.setBounds(1023, 750, 76, 30);
+        Listo.setBounds(1023, 750, 74, 25);
 
         getContentPane().add(lobby, "card6");
 
@@ -1047,7 +1125,6 @@ public class Juego extends javax.swing.JFrame {
 
     private void btnSeleccionarPersonajesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSeleccionarPersonajesActionPerformed
         // TODO add your handling code here:
-        
         if(idsSeleccionados.size() == 3){
           heroesElegidos = obtenerPersonajesSeleccionados();  
         }
@@ -1055,11 +1132,8 @@ public class Juego extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Faltan personajes por escoger (Deben ser 3)");
             return;
         }
-        
         cargarArmasenScroll(indexArma);
-        
         caragrTeam();
-        colocarFondosArmas(indexArma);
         cardLayout = (CardLayout) (getContentPane().getLayout());
         cardLayout.show(getContentPane(), "card5");
     }//GEN-LAST:event_btnSeleccionarPersonajesActionPerformed
@@ -1074,7 +1148,6 @@ public class Juego extends javax.swing.JFrame {
         }
         indexArma++;
         if(indexArma > 2){
-            
             for(Personajes p: heroesElegidos){
                 p.generarDamage();
             }
@@ -1082,7 +1155,6 @@ public class Juego extends javax.swing.JFrame {
             cardLayout = (CardLayout) (getContentPane().getLayout());
             cardLayout.show(getContentPane(), "card7");
         }else{
-            colocarFondosArmas(indexArma);
             cargarArmasenScroll(indexArma);
         }
     }//GEN-LAST:event_SeleccionarArmasActionPerformed
@@ -1173,8 +1245,12 @@ public class Juego extends javax.swing.JFrame {
     private javax.swing.JPanel armasPorPersonaje;
     private javax.swing.JPanel attack;
     private javax.swing.JPanel attacked;
+    private javax.swing.JTextArea bitacora;
+    private javax.swing.JScrollPane bitacoraScroll;
     private javax.swing.JButton btnSeleccionarPersonajes;
+    private javax.swing.JPanel comodin;
     private javax.swing.JTextField consola;
+    private javax.swing.JPanel contenedorComodin;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel lobby;
     private javax.swing.JScrollPane lobbyScroll;
@@ -1188,6 +1264,7 @@ public class Juego extends javax.swing.JFrame {
     private javax.swing.JLabel seleccionTitle;
     private javax.swing.JPanel team;
     private javax.swing.JPanel teamSeleccionado;
+    private javax.swing.JLabel tempComodin;
     private javax.swing.JLabel yourTeam;
     // End of variables declaration//GEN-END:variables
 }
