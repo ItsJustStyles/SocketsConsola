@@ -20,8 +20,7 @@ public class CommandLog extends Command{
     @Override
     public void processForServer(ThreadServidor threadServidor) {
         CommandUnicast comandoARealizar = new CommandUnicast("LOG", threadServidor.name);
-        Server server = threadServidor.getRefServer();
-        ThreadServidor jugadorActual = server.getCurrentTurnPlayer();
+        ThreadServidor jugadorActual = threadServidor.getRefServer().getClientByName(threadServidor.name);
         
         try {
             jugadorActual.objectSender.writeObject(comandoARealizar);

@@ -22,7 +22,6 @@ public class CommandSeleccionarJugador extends Command{
 
     @Override
     public void processForServer(ThreadServidor threadServidor) {
-        Server server = threadServidor.getRefServer();
         String[] params = this.getParameters();
         
         String command;
@@ -42,8 +41,8 @@ public class CommandSeleccionarJugador extends Command{
         CommandEnviarHeroes enviarCommand = new CommandEnviarHeroes(heroesDelObjetivo);
         
         try {
-            targetThread.objectSender.writeObject(enviarCommand);
-            targetThread.objectSender.flush();
+            selfThread.objectSender.writeObject(enviarCommand);
+            selfThread.objectSender.flush();
         } catch (java.io.IOException ex) {
                 // Manejar la desconexión del objetivo
             //threadServidor.getRefServer().getRefFrame().writeMessage("Error al enviar ataque a " + objetivo);
