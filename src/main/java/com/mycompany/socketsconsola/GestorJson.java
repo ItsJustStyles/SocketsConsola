@@ -46,7 +46,28 @@ public class GestorJson {
             return Collections.emptyList();
         }
     }
-    
+    public static String obtenerInfoJugador(String nombre) {
+        List<Jugador> jugadores = cargarJugador();
+        Jugador jugador = buscarJugador(jugadores, nombre);
+
+        if (jugador == null) {
+            return "Jugador no encontrado: " + nombre;
+        }
+
+        StringBuilder info = new StringBuilder();
+        info.append("═══════════════════════════════════════\n");
+        info.append("  ESTADÍSTICAS DE ").append(jugador.getNombre().toUpperCase()).append("\n");
+        info.append("═══════════════════════════════════════\n");
+        info.append("  Victorias (Wins):    ").append(jugador.getWins()).append("\n");
+        info.append("  Derrotas (Loses):    ").append(jugador.getLoses()).append("\n");
+        info.append("  Ataques (Attacks):   ").append(jugador.getAttacks()).append("\n");
+        info.append("  Exitosos (Success):  ").append(jugador.getSuccess()).append("\n");
+        info.append("  Fallidos (Failed):   ").append(jugador.getFailed()).append("\n");
+        info.append("  Rendidos (Giveup):   ").append(jugador.getGiveup()).append("\n");
+        info.append("═══════════════════════════════════════\n");
+
+        return info.toString();
+    }
     public static List<Jugador> cargarJugador(){
         InputStream stream = GestorJson.class.getResourceAsStream(ARCHIVO2);
         if (stream == null) {
@@ -108,7 +129,7 @@ public class GestorJson {
         }
     }
     // Buscar jugador por nombre
-    private static Jugador buscarJugador(List<Jugador> jugadores, String nombre) {
+    public static Jugador buscarJugador(List<Jugador> jugadores, String nombre) {
         for (Jugador j : jugadores) {
             if (j.getNombre().equalsIgnoreCase(nombre)) {
                 return j;

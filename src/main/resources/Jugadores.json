@@ -43,5 +43,14 @@
     "success": 0,
     "failed": 0,
     "giveup": 0
+  },
+  {
+    "nombre": "Justin",
+    "wins": 0,
+    "loses": 0,
+    "attacks": 0,
+    "success": 0,
+    "failed": 0,
+    "giveup": 0
   }
 ]
