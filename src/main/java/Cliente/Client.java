@@ -4,6 +4,7 @@
  */
 package Cliente;
 
+import Comandos.Command;
 import Comandos.CommandFactory;
 import Comandos.CommandTeam;
 import com.mycompany.socketsconsola.Juego;
@@ -29,6 +30,8 @@ public class Client {
     
     public String name;
     List<Personajes> heroes;
+    
+    
 
     public Client(Juego refFrame, String name, List<Personajes> heroes, int PORT, String IP_ADDRESS) {
         this.PORT = PORT;
@@ -74,8 +77,6 @@ public class Client {
         return objectSender;
     }
     
-    
-
     public Juego getRefFrame() {
         return refFrame;
     }

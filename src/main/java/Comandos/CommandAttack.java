@@ -42,26 +42,154 @@ public class CommandAttack extends Command{
                 return; 
             }
         }
-        String[] params = this.getParameters();
         
-        String p;
-        String arma;
-        String objetivo;
+        ThreadServidor selfThread = threadServidor.getRefServer().getClientByName(threadServidor.name);
+        String[] comodinInfo = this.getParameters();
         
-        try{
-            p = params[1];
-            arma = params[2];
-            objetivo = params[3];
+        String comodinTipo = comodinInfo[comodinInfo.length - 3];
+        String comodinDesbloqueado = comodinInfo[comodinInfo.length - 2];
+        String comodinUsado = comodinInfo[comodinInfo.length - 1];
+        
+        boolean cTipo = Boolean.parseBoolean(comodinTipo);
+        boolean cDesbloqueado = Boolean.parseBoolean(comodinDesbloqueado);
+        boolean cUsado = Boolean.parseBoolean(comodinUsado);
+        
+        if(cDesbloqueado && cUsado){
+            String[] params = this.getParameters();
+            String p;
+            String arma;
+            String p2Oarma2;
+            String arma2;
+            String objetivo;
             
-        }catch(ArrayIndexOutOfBoundsException e){
-            String msg = "Parametros para el ataque imcompletos";
-            server.getRefFrame().writeConsola(msg);
+            try{
+                p = params[1];
+                arma = params[2];
+                p2Oarma2 = params[3];
+                
+                boolean personajeValido = threadServidor.esPersonajeValido(p);
+                boolean armaValida = threadServidor.esArmaValida(arma, p);
+                
+                if(!personajeValido){
+                    String msg = "El personaje no es valido";
+                    CommandMessageConsola messageConsola = new CommandMessageConsola(msg);
+                    try {
+                        selfThread.objectSender.writeObject(messageConsola);
+                        selfThread.objectSender.flush();
+                    } catch (java.io.IOException ex) {
+                        //threadServidor.getRefServer().getRefFrame().writeConsola("Error al enviar ataque a " + objetivo);
+                    }
+                    this.setIsBroadcast(false);
+                    return;
+                }
+                
+                if(!armaValida){
+                    String msg = "El arma no es valida";
+                    CommandMessageConsola messageConsola = new CommandMessageConsola(msg);
+                    try {
+                        selfThread.objectSender.writeObject(messageConsola);
+                        selfThread.objectSender.flush();
+                    } catch (java.io.IOException ex) {
+                        //threadServidor.getRefServer().getRefFrame().writeConsola("Error al enviar ataque a " + objetivo);
+                    }
+                    this.setIsBroadcast(false);
+                    return;
+                }
+                
+                boolean verficarP2 = threadServidor.esPersonajeValido(p2Oarma2);
+                boolean verficarA2 = threadServidor.esArmaValida(p, p2Oarma2);
+                
+                if(verficarP2){
+                    arma2 = params[4];
+                    objetivo = params[5];
+                    boolean verficarArma = threadServidor.esArmaValida(p2Oarma2, arma2);
+                    if(!verficarArma){
+                        String msg = "El arma no es valida";
+                        CommandMessageConsola messageConsola = new CommandMessageConsola(msg);
+                        try {
+                            selfThread.objectSender.writeObject(messageConsola);
+                            selfThread.objectSender.flush();
+                        } catch (java.io.IOException ex) {
+                            //threadServidor.getRefServer().getRefFrame().writeConsola("Error al enviar ataque a " + objetivo);
+                        }
+                        this.setIsBroadcast(false);
+                        return;
+                    }
+                    
+                    ThreadServidor targetThread = threadServidor.getRefServer().getClientByName(objetivo);
+                    String damage = threadServidor.obtenerDano(arma, p) + "";
+                    CommandHit hitCommand = new CommandHit(p, arma, threadServidor.name, damage);
+                    try {
+                        targetThread.objectSender.writeObject(hitCommand);
+                        targetThread.objectSender.flush();
+                    } catch (java.io.IOException ex) {
+                        //threadServidor.getRefServer().getRefFrame().writeConsola("Error al enviar ataque a " + objetivo);
+                    }
+                    
+                    String damage2 = threadServidor.obtenerDano(arma, p) + "";
+                    CommandHit hitCommand2 = new CommandHit(p2Oarma2, arma2, threadServidor.name, damage2);
+                    try {
+                        targetThread.objectSender.writeObject(hitCommand2);
+                        targetThread.objectSender.flush();
+                    } catch (java.io.IOException ex) {
+                        //threadServidor.getRefServer().getRefFrame().writeConsola("Error al enviar ataque a " + objetivo);
+                    }
+                    
+                }else if(verficarA2){
+                    
+                }else{
+                    String msg = "Parametros para el ataque imcompletos";
+                    CommandMessageConsola messageConsola = new CommandMessageConsola(msg);
+                    try {
+                        selfThread.objectSender.writeObject(messageConsola);
+                        selfThread.objectSender.flush();
+                    } catch (java.io.IOException ex) {
+                        //threadServidor.getRefServer().getRefFrame().writeConsola("Error al enviar ataque a " + objetivo);
+                    }
+                    this.setIsBroadcast(false);
+                    return;
+                }
+                
+            }catch(ArrayIndexOutOfBoundsException e){
+                String msg = "Parametros para el ataque imcompletos";
+                CommandMessageConsola messageConsola = new CommandMessageConsola(msg);
+                try {
+                    selfThread.objectSender.writeObject(messageConsola);
+                    selfThread.objectSender.flush();
+                } catch (java.io.IOException ex) {
+                    //threadServidor.getRefServer().getRefFrame().writeConsola("Error al enviar ataque a " + objetivo);
+                }
+                this.setIsBroadcast(false);
+                return;
+            }
+            
+        }else{
+        
+            String[] params = this.getParameters();
+
+            String p;
+            String arma;
+            String objetivo;
+
+            try{
+                p = params[1];
+                arma = params[2];
+                objetivo = params[3];
+
+            }catch(ArrayIndexOutOfBoundsException e){
+                String msg = "Parametros para el ataque imcompletos";
+                CommandMessageConsola messageConsola = new CommandMessageConsola(msg);
+                try {
+                    selfThread.objectSender.writeObject(messageConsola);
+                    selfThread.objectSender.flush();
+                } catch (java.io.IOException ex) {
+                    //threadServidor.getRefServer().getRefFrame().writeConsola("Error al enviar ataque a " + objetivo);
+                }
             this.setIsBroadcast(false);
             return;
         }
         
         ThreadServidor targetThread = threadServidor.getRefServer().getClientByName(objetivo);
-        ThreadServidor selfThread = threadServidor.getRefServer().getClientByName(threadServidor.name);
         
         if(targetThread != null){
             
@@ -69,7 +197,13 @@ public class CommandAttack extends Command{
             boolean personajeValido = threadServidor.esPersonajeValido(p);
             if(!personajeValido){
                 String msg = "El personaje no es valido";
-                server.getRefFrame().writeConsola(msg);
+                CommandMessageConsola messageConsola = new CommandMessageConsola(msg);
+                try {
+                    selfThread.objectSender.writeObject(messageConsola);
+                    selfThread.objectSender.flush();
+                } catch (java.io.IOException ex) {
+                    //threadServidor.getRefServer().getRefFrame().writeConsola("Error al enviar ataque a " + objetivo);
+                }
                 this.setIsBroadcast(false);
                 return;
             }
@@ -77,7 +211,13 @@ public class CommandAttack extends Command{
             boolean armaValida = threadServidor.esArmaValida(arma, p);
             if(!armaValida){
                 String msg = "El arma no es valida";
-                server.getRefFrame().writeConsola(msg);
+                CommandMessageConsola messageConsola = new CommandMessageConsola(msg);
+                try {
+                    selfThread.objectSender.writeObject(messageConsola);
+                    selfThread.objectSender.flush();
+                } catch (java.io.IOException ex) {
+                    //threadServidor.getRefServer().getRefFrame().writeConsola("Error al enviar ataque a " + objetivo);
+                }
                 this.setIsBroadcast(false);
                 return;
             }
@@ -88,7 +228,7 @@ public class CommandAttack extends Command{
                 targetThread.objectSender.writeObject(hitCommand);
                 targetThread.objectSender.flush();
             } catch (java.io.IOException ex) {
-                threadServidor.getRefServer().getRefFrame().writeConsola("Error al enviar ataque a " + objetivo);
+                //threadServidor.getRefServer().getRefFrame().writeConsola("Error al enviar ataque a " + objetivo);
             }
             
             String[] broadcastParams = new String[]{threadServidor.name, objetivo, p, arma};
@@ -101,6 +241,7 @@ public class CommandAttack extends Command{
         }
         
         server.avanzarTurno();
+        }
         
     }
 

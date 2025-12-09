@@ -26,8 +26,11 @@ public enum CommandType {
     ENVIARHEROES(0),
     PASARTURNO(0),
     USARCOMODIN(0),
+    PARAMSCOMODIN(0),
+    RESPUESTACMODIN(0),
     CHAT(2),
-    CHAT_PRIVADO(3);        
+    CHAT_PRIVADO(3),
+    MESSAGECONSOLA(0);        
     
     private final int requiredParameters;
 

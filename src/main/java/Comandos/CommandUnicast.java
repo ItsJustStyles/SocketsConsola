@@ -33,6 +33,9 @@ public class CommandUnicast extends Command{
         }else if(comandoARealizar.equals("USARCOMODIN")){
             if(client.getRefFrame().getComodinDesbloqueado()){
                 client.getRefFrame().actualizarComodin();
+                if(client.getRefFrame().getComodinTipo() == false){
+                    client.getRefFrame().iniciarComodin();
+                }
             }else{
                 client.getRefFrame().writeConsola("El comodin aun no se ha desbloqueado");
             }

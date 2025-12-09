@@ -27,9 +27,9 @@ public class CommandTurn extends Command {
         String turnoJugador = this.getParameters()[1];
 
         if (client.name.equals(turnoJugador)) {
-            //client.getRefFrame().writeBitacora("➡️ ES TU TURNO");
+            client.getRefFrame().writeBitacora("➡️ ES TU TURNO");
         } else {
-            //client.getRefFrame().writeBitacora("Turno de: " + turnoJugador);
+            client.getRefFrame().writeBitacora("Turno de: " + turnoJugador);
         }
     }
 }

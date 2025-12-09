@@ -95,6 +95,7 @@ public class Juego extends javax.swing.JFrame {
     
     private boolean comodinTipo = true;
     private boolean comodinDesbloqueado = false;
+    private boolean comodinUsado = false;
     /**
      * Creates new form Juego
      */
@@ -171,6 +172,10 @@ public class Juego extends javax.swing.JFrame {
         contenedorComodin.add(miImagen);
         contenedorComodin.repaint();
         contenedorComodin.getParent().repaint();
+        
+        comodinTipo = true;
+        comodinDesbloqueado = false;
+        comodinUsado = false;
         temporizadorComodin();
     }
     
@@ -186,7 +191,7 @@ public class Juego extends javax.swing.JFrame {
         contenedorComodin.add(miImagen);
         contenedorComodin.repaint();
         contenedorComodin.getParent().repaint();
-        temporizadorComodin();
+        comodinUsado = true;
     }
     
     public void escogerComodin(){
@@ -206,9 +211,17 @@ public class Juego extends javax.swing.JFrame {
         return comodinDesbloqueado;
     }
     
+    public void setComodinDesbloqueado(boolean comodinDesbloqueado){
+        this.comodinDesbloqueado = comodinDesbloqueado;
+    }
+
+    public boolean isComodinUsado() {
+        return comodinUsado;
+    }
+    
     public void temporizadorComodin(){
-        this.tiempoRestanteSegundos = 0 * 60;
-        comodinDesbloqueado = false;
+        this.tiempoRestanteSegundos = 1 * 60;
+        //comodinDesbloqueado = false;
         
         tempComodin.setText(formatearTiempo(this.tiempoRestanteSegundos));
         if (this.swingTimer != null && this.swingTimer.isRunning()) {
@@ -223,9 +236,10 @@ public class Juego extends javax.swing.JFrame {
                 tempComodin.setText(formatearTiempo(tiempoRestanteSegundos)); 
 
                 if (tiempoRestanteSegundos <= 0) {
-                    swingTimer.stop(); // Detener el temporizador
+                    swingTimer.stop(); 
                     tempComodin.setText("¡DISPONIBLE!");
                     comodinDesbloqueado = true;
+                    System.out.println(comodinDesbloqueado);
                     escogerComodin();
                 }
             }
@@ -700,7 +714,7 @@ public class Juego extends javax.swing.JFrame {
     }
     
     private void handleCommandInput(java.awt.event.ActionEvent evt) {
-      String msg =  consola.getText().trim();
+      String msg =  consola.getText().trim() + " " + comodinTipo + " " + comodinDesbloqueado + " " + comodinUsado;
       consola.setText("");
       if (msg.length()>0){
           String args[] = CommandUtil.tokenizerArgs(msg);

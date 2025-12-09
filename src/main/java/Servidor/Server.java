@@ -17,13 +17,18 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  *
  * @author lacay
  */
 public class Server {
+    private final Map<String, Boolean> comodinResponses = new ConcurrentHashMap<>();
+    private final Map<String, Object> syncLocks = new ConcurrentHashMap<>();
+    
     public List<ThreadServidor> turnOrder = new ArrayList<>();
     private int currentTurn = 0;
     private int attacksThisRound = 0;
@@ -132,7 +137,7 @@ public class Server {
         return refFrame;
     }
     
-        public ThreadServidor getClientByName(String targetName) {
+    public ThreadServidor getClientByName(String targetName) {
         
         for (ThreadServidor clientThread : connectedClients) {
             if (clientThread.name != null && clientThread.name.equalsIgnoreCase(targetName)) {
@@ -218,5 +223,5 @@ public class Server {
             broadcast(new CommandGanador(ganador.name));
         }
     }
-    
+   
 }
