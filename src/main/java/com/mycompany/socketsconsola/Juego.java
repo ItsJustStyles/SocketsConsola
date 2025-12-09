@@ -750,6 +750,15 @@ public class Juego extends javax.swing.JFrame {
         consola.setText(msg);
     }
     
+    public void writeLog(String msg, String msg2){
+        log1.setText(msg);
+        logArma.setText(msg2);
+    }
+    
+    public void writeLog2(String msg){
+        log2.setText(msg);
+    }
+    
     private void iniciarServer(){
         Server server = new Server(this);
         cliente = new Client(this, "Justin", heroesElegidos, 35500, "localhost");
@@ -901,7 +910,10 @@ public class Juego extends javax.swing.JFrame {
         Status = new javax.swing.JScrollPane();
         StatusText = new javax.swing.JTextArea();
         attacked = new javax.swing.JPanel();
+        log1 = new javax.swing.JLabel();
+        logArma = new javax.swing.JLabel();
         attack = new javax.swing.JPanel();
+        log2 = new javax.swing.JLabel();
         team = new javax.swing.JPanel();
         yourTeam = new javax.swing.JLabel();
         teamSeleccionado = new javax.swing.JPanel();
@@ -947,7 +959,7 @@ public class Juego extends javax.swing.JFrame {
         TituloMenu.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         TituloMenu.setText("Sockets");
         MenuInicio.add(TituloMenu);
-        TituloMenu.setBounds(180, 20, 110, 32);
+        TituloMenu.setBounds(180, 20, 110, 29);
 
         Jugar.setText("Jugar");
         Jugar.addActionListener(new java.awt.event.ActionListener() {
@@ -956,7 +968,7 @@ public class Juego extends javax.swing.JFrame {
             }
         });
         MenuInicio.add(Jugar);
-        Jugar.setBounds(160, 80, 76, 27);
+        Jugar.setBounds(160, 80, 72, 23);
 
         Salir.setText("Salir");
         Salir.addActionListener(new java.awt.event.ActionListener() {
@@ -965,7 +977,7 @@ public class Juego extends javax.swing.JFrame {
             }
         });
         MenuInicio.add(Salir);
-        Salir.setBounds(160, 150, 76, 27);
+        Salir.setBounds(160, 150, 72, 23);
 
         getContentPane().add(MenuInicio, "card2");
 
@@ -974,7 +986,7 @@ public class Juego extends javax.swing.JFrame {
         seleccionTitle.setFont(new java.awt.Font("Unispace", 0, 24)); // NOI18N
         seleccionTitle.setText("Selección jugadores");
         SeleccionPersonajesMenu.add(seleccionTitle);
-        seleccionTitle.setBounds(490, 30, 280, 32);
+        seleccionTitle.setBounds(490, 30, 280, 29);
 
         scrollPersonajes.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPersonajes.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
@@ -994,7 +1006,7 @@ public class Juego extends javax.swing.JFrame {
             }
         });
         SeleccionPersonajesMenu.add(btnSeleccionarPersonajes);
-        btnSeleccionarPersonajes.setBounds(530, 750, 200, 30);
+        btnSeleccionarPersonajes.setBounds(530, 750, 200, 27);
 
         getContentPane().add(SeleccionPersonajesMenu, "card3");
 
@@ -1040,15 +1052,30 @@ public class Juego extends javax.swing.JFrame {
         attacked.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         attacked.setForeground(new java.awt.Color(0, 0, 0));
 
+        log1.setFont(new java.awt.Font("Unispace", 0, 14)); // NOI18N
+        log1.setText("No has sido atacado");
+
+        logArma.setFont(new java.awt.Font("Unispace", 0, 14)); // NOI18N
+
         javax.swing.GroupLayout attackedLayout = new javax.swing.GroupLayout(attacked);
         attacked.setLayout(attackedLayout);
         attackedLayout.setHorizontalGroup(
             attackedLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 585, Short.MAX_VALUE)
+            .addGroup(attackedLayout.createSequentialGroup()
+                .addGap(14, 14, 14)
+                .addGroup(attackedLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(log1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(logArma, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(404, Short.MAX_VALUE))
         );
         attackedLayout.setVerticalGroup(
             attackedLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 359, Short.MAX_VALUE)
+            .addGroup(attackedLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(log1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(logArma, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(304, Short.MAX_VALUE))
         );
 
         Mapa.add(attacked);
@@ -1058,15 +1085,24 @@ public class Juego extends javax.swing.JFrame {
         attack.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         attack.setForeground(new java.awt.Color(0, 0, 0));
 
+        log2.setFont(new java.awt.Font("Unispace", 0, 14)); // NOI18N
+        log2.setText("No has atacado");
+
         javax.swing.GroupLayout attackLayout = new javax.swing.GroupLayout(attack);
         attack.setLayout(attackLayout);
         attackLayout.setHorizontalGroup(
             attackLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGroup(attackLayout.createSequentialGroup()
+                .addGap(17, 17, 17)
+                .addComponent(log2, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(435, Short.MAX_VALUE))
         );
         attackLayout.setVerticalGroup(
             attackLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 258, Short.MAX_VALUE)
+            .addGroup(attackLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(log2)
+                .addContainerGap(234, Short.MAX_VALUE))
         );
 
         Mapa.add(attack);
@@ -1079,7 +1115,7 @@ public class Juego extends javax.swing.JFrame {
         yourTeam.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         yourTeam.setText("Tu equipo");
         team.add(yourTeam);
-        yourTeam.setBounds(6, 6, 65, 19);
+        yourTeam.setBounds(6, 6, 79, 18);
 
         teamSeleccionado.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         teamSeleccionado.setLayout(new java.awt.GridLayout(0, 3));
@@ -1092,32 +1128,32 @@ public class Juego extends javax.swing.JFrame {
         arma1.setFont(new java.awt.Font("Unispace", 0, 12)); // NOI18N
         arma1.setText("jLabel1");
         armasPorPersonaje.add(arma1);
-        arma1.setBounds(21, 25, 100, 16);
+        arma1.setBounds(21, 25, 100, 15);
 
         arma2.setFont(new java.awt.Font("Unispace", 0, 12)); // NOI18N
         arma2.setText("jLabel2");
         armasPorPersonaje.add(arma2);
-        arma2.setBounds(21, 75, 100, 16);
+        arma2.setBounds(21, 75, 100, 15);
 
         arma3.setFont(new java.awt.Font("Unispace", 0, 12)); // NOI18N
         arma3.setText("jLabel3");
         armasPorPersonaje.add(arma3);
-        arma3.setBounds(21, 132, 100, 16);
+        arma3.setBounds(21, 132, 100, 15);
 
         arma4.setFont(new java.awt.Font("Unispace", 0, 12)); // NOI18N
         arma4.setText("jLabel4");
         armasPorPersonaje.add(arma4);
-        arma4.setBounds(21, 176, 100, 16);
+        arma4.setBounds(21, 176, 100, 15);
 
         arma5.setFont(new java.awt.Font("Unispace", 0, 12)); // NOI18N
         arma5.setText("jLabel5");
         armasPorPersonaje.add(arma5);
-        arma5.setBounds(21, 229, 100, 16);
+        arma5.setBounds(21, 229, 100, 15);
 
         nombreVidaPersonaje.setFont(new java.awt.Font("Unispace", 0, 14)); // NOI18N
         nombreVidaPersonaje.setText("Hola xd");
         armasPorPersonaje.add(nombreVidaPersonaje);
-        nombreVidaPersonaje.setBounds(0, 0, 48, 19);
+        nombreVidaPersonaje.setBounds(0, 0, 62, 18);
 
         team.add(armasPorPersonaje);
         armasPorPersonaje.setBounds(6, 278, 305, 0);
@@ -1157,7 +1193,7 @@ public class Juego extends javax.swing.JFrame {
         tempComodin.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         tempComodin.setText("jLabel2");
         comodin.add(tempComodin);
-        tempComodin.setBounds(1010, 640, 37, 16);
+        tempComodin.setBounds(1010, 640, 50, 15);
 
         Mapa.add(comodin);
         comodin.setBounds(870, 390, 320, 220);
@@ -1169,7 +1205,7 @@ public class Juego extends javax.swing.JFrame {
         TituloArmas.setFont(new java.awt.Font("Unispace", 0, 24)); // NOI18N
         TituloArmas.setText("Escoger armas");
         MenuArmas.add(TituloArmas);
-        TituloArmas.setBounds(454, 59, 159, 32);
+        TituloArmas.setBounds(454, 59, 187, 29);
 
         SeleccionarArmas.setFont(new java.awt.Font("Unispace", 0, 18)); // NOI18N
         SeleccionarArmas.setText("Seleccionar armas");
@@ -1179,7 +1215,7 @@ public class Juego extends javax.swing.JFrame {
             }
         });
         MenuArmas.add(SeleccionarArmas);
-        SeleccionarArmas.setBounds(510, 760, 230, 35);
+        SeleccionarArmas.setBounds(510, 760, 230, 30);
 
         scrollArmas.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         scrollArmas.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
@@ -1194,7 +1230,7 @@ public class Juego extends javax.swing.JFrame {
         personajeArmas.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         personajeArmas.setText("Nombre: Juan");
         MenuArmas.add(personajeArmas);
-        personajeArmas.setBounds(560, 100, 90, 19);
+        personajeArmas.setBounds(560, 100, 106, 18);
 
         getContentPane().add(MenuArmas, "card5");
 
@@ -1215,7 +1251,7 @@ public class Juego extends javax.swing.JFrame {
             }
         });
         lobby.add(Listo);
-        Listo.setBounds(1023, 750, 76, 30);
+        Listo.setBounds(1023, 750, 74, 25);
 
         getContentPane().add(lobby, "card6");
 
@@ -1414,6 +1450,9 @@ public class Juego extends javax.swing.JFrame {
     private javax.swing.JPanel lobby;
     private javax.swing.JScrollPane lobbyScroll;
     private javax.swing.JTextArea lobbyText;
+    private javax.swing.JLabel log1;
+    private javax.swing.JLabel log2;
+    private javax.swing.JLabel logArma;
     private javax.swing.JLabel nombreVidaPersonaje;
     private javax.swing.JPanel panelArmas;
     private javax.swing.JLabel personajeArmas;

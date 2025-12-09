@@ -34,7 +34,10 @@ public class CommandHit extends Command{
         
         boolean exitoAtaque = client.getRefFrame().recibirAtaque(damage);
         String mensaje  = "El jugador: " + attacker + " te atacó con " + p + " usando el arma: " + arma;
+        String log =  "El jugador: " + attacker + " te atacó con " + p;
+        String log_1 = "Weapon: " + arma;
         client.getRefFrame().writeBitacora(mensaje);
+        client.getRefFrame().writeLog(log, log_1);
         
         if(client.getRefFrame().haMuerto()){
             client.getRefFrame().writeBitacora("Has muerto");
