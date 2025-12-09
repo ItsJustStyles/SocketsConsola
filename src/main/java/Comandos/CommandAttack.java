@@ -46,9 +46,10 @@ public class CommandAttack extends Command{
         ThreadServidor selfThread = threadServidor.getRefServer().getClientByName(threadServidor.name);
         String[] comodinInfo = this.getParameters();
         
-        String comodinTipo = comodinInfo[comodinInfo.length - 3];
-        String comodinDesbloqueado = comodinInfo[comodinInfo.length - 2];
-        String comodinUsado = comodinInfo[comodinInfo.length - 1];
+        String comodinTipo = comodinInfo[comodinInfo.length - 4];
+        String comodinDesbloqueado = comodinInfo[comodinInfo.length - 3];
+        String comodinUsado = comodinInfo[comodinInfo.length - 2];
+        String status = comodinInfo[comodinInfo.length - 1];
         
         boolean cTipo = Boolean.parseBoolean(comodinTipo);
         boolean cDesbloqueado = Boolean.parseBoolean(comodinDesbloqueado);
@@ -118,7 +119,7 @@ public class CommandAttack extends Command{
                     
                     ThreadServidor targetThread = threadServidor.getRefServer().getClientByName(objetivo);
                     String damage = threadServidor.obtenerDano(arma, p) + "";
-                    CommandHit hitCommand = new CommandHit(p, arma, threadServidor.name, damage);
+                    CommandHit hitCommand = new CommandHit(p, threadServidor.obtenerNombreArma(arma,p), threadServidor.name, damage, status);
                     try {
                         targetThread.objectSender.writeObject(hitCommand);
                         targetThread.objectSender.flush();
@@ -127,7 +128,7 @@ public class CommandAttack extends Command{
                     }
                     
                     String damage2 = threadServidor.obtenerDano(arma, p) + "";
-                    CommandHit hitCommand2 = new CommandHit(p2Oarma2, arma2, threadServidor.name, damage2);
+                    CommandHit hitCommand2 = new CommandHit(p2Oarma2, threadServidor.obtenerNombreArma(arma2, p2Oarma2), threadServidor.name, damage2, status);
                     try {
                         targetThread.objectSender.writeObject(hitCommand2);
                         targetThread.objectSender.flush();
@@ -135,7 +136,7 @@ public class CommandAttack extends Command{
                         //threadServidor.getRefServer().getRefFrame().writeConsola("Error al enviar ataque a " + objetivo);
                     }
                     
-                    CommandRegistroAtaque registro = new CommandRegistroAtaque(p2Oarma2, objetivo, arma2);
+                    CommandRegistroAtaque registro = new CommandRegistroAtaque(p2Oarma2, objetivo, threadServidor.obtenerNombreArma(arma2, p2Oarma2));
                     try {
                         selfThread.objectSender.writeObject(registro);
                         selfThread.objectSender.flush();
@@ -147,7 +148,7 @@ public class CommandAttack extends Command{
                     objetivo = params[4];
                     ThreadServidor targetThread = threadServidor.getRefServer().getClientByName(objetivo);
                     String damage = threadServidor.obtenerDano(arma, p) + "";
-                    CommandHit hitCommand = new CommandHit(p, arma, threadServidor.name, damage);
+                    CommandHit hitCommand = new CommandHit(p, threadServidor.obtenerNombreArma(arma, p), threadServidor.name, damage, status);
                     try {
                         targetThread.objectSender.writeObject(hitCommand);
                         targetThread.objectSender.flush();
@@ -156,7 +157,7 @@ public class CommandAttack extends Command{
                     }
                     
                     String damage2 = threadServidor.obtenerDano(arma, p) + "";
-                    CommandHit hitCommand2 = new CommandHit(p, p2Oarma2, threadServidor.name, damage2);
+                    CommandHit hitCommand2 = new CommandHit(p, threadServidor.obtenerNombreArma(p2Oarma2, p), threadServidor.name, damage2, status);
                     try {
                         targetThread.objectSender.writeObject(hitCommand2);
                         targetThread.objectSender.flush();
@@ -164,7 +165,7 @@ public class CommandAttack extends Command{
                         //threadServidor.getRefServer().getRefFrame().writeConsola("Error al enviar ataque a " + objetivo);
                     }
                     
-                    CommandRegistroAtaque registro = new CommandRegistroAtaque(p, objetivo, p2Oarma2);
+                    CommandRegistroAtaque registro = new CommandRegistroAtaque(p, objetivo, threadServidor.obtenerNombreArma(p2Oarma2, p));
                     try {
                         selfThread.objectSender.writeObject(registro);
                         selfThread.objectSender.flush();
@@ -186,7 +187,7 @@ public class CommandAttack extends Command{
                     return;
                 }
                 
-            }catch(ArrayIndexOutOfBoundsException e){
+            }catch(Exception e){
                 String msg = "Parametros para el ataque imcompletos";
                 CommandMessageConsola messageConsola = new CommandMessageConsola(msg);
                 try {
@@ -268,7 +269,7 @@ public class CommandAttack extends Command{
             }
             
             String damage = threadServidor.obtenerDano(arma, p) + "";
-            CommandHit hitCommand = new CommandHit(p, arma, attackerName, damage);
+            CommandHit hitCommand = new CommandHit(p, threadServidor.obtenerNombreArma(arma,p), attackerName, damage, status);
             try {
                 targetThread.objectSender.writeObject(hitCommand);
                 targetThread.objectSender.flush();
@@ -276,7 +277,7 @@ public class CommandAttack extends Command{
                 //threadServidor.getRefServer().getRefFrame().writeConsola("Error al enviar ataque a " + objetivo);
             }
             
-            CommandRegistroAtaque registro = new CommandRegistroAtaque(p, objetivo, arma);
+            CommandRegistroAtaque registro = new CommandRegistroAtaque(p, objetivo, threadServidor.obtenerNombreArma(arma,p));
             try {
                 selfThread.objectSender.writeObject(registro);
                 selfThread.objectSender.flush();

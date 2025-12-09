@@ -48,8 +48,8 @@
     "nombre": "Justin",
     "wins": 1,
     "loses": 1,
-    "attacks": 4,
-    "success": 0,
+    "attacks": 13,
+    "success": 5,
     "failed": 0,
     "giveup": 0
   }

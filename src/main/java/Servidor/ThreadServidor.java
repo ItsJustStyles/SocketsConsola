@@ -107,6 +107,24 @@ public class ThreadServidor extends Thread {
         return false;
     }
     
+    public String obtenerNombreArma(String nombreArma, String personaje){
+        Personajes p = null;
+        for(Personajes heroe: heroes){
+            if (heroe.getNombre().equals(personaje)) {
+                p = heroe;
+                break;
+            }
+        }
+      
+        List<Armas> armasHeroe = p.getArmas();
+        for(Armas a : armasHeroe){
+            if(a.getNombre().equals(nombreArma.toLowerCase()) || a.getNombreSecundario().equals(nombreArma.toLowerCase())){
+                return a.getNombre();
+            }
+        }
+        return "";
+    }
+    
     public int obtenerDano(String arma, String personaje){
         List<List<Integer>> danos = null;
         int indexDamage = 0;

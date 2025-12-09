@@ -68,6 +68,27 @@ public class GestorJson {
 
         return info.toString();
     }
+    
+    public static String obtenerInfoJugadorTokens(String nombre) {
+        List<Jugador> jugadores = cargarJugador();
+        Jugador jugador = buscarJugador(jugadores, nombre);
+
+        if (jugador == null) {
+            return "ERROR_NO_ENCONTRADO";
+        }
+
+        StringBuilder infoTokens = new StringBuilder();
+
+        infoTokens.append(jugador.getWins()).append(" "); 
+        infoTokens.append(jugador.getLoses()).append(" "); 
+        infoTokens.append(jugador.getAttacks()).append(" ");
+        infoTokens.append(jugador.getSuccess()).append(" ");
+        infoTokens.append(jugador.getFailed()).append(" ");
+        infoTokens.append(jugador.getGiveup()); // No se añade espacio al final
+
+        return infoTokens.toString();
+    }
+    
     public static List<Jugador> cargarJugador(){
         InputStream stream = GestorJson.class.getResourceAsStream(ARCHIVO2);
         if (stream == null) {

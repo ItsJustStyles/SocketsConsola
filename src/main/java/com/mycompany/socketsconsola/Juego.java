@@ -98,6 +98,7 @@ public class Juego extends javax.swing.JFrame {
     private boolean comodinUsado = false;
     
     private LogPartida logJugador;
+    String jugador;
     /**
      * Creates new form Juego
      */
@@ -716,7 +717,8 @@ public class Juego extends javax.swing.JFrame {
     }
     
     private void handleCommandInput(java.awt.event.ActionEvent evt) {
-      String msg =  consola.getText().trim() + " " + comodinTipo + " " + comodinDesbloqueado + " " + comodinUsado;
+      String msg =  consola.getText().trim() + " " + comodinTipo + " " + comodinDesbloqueado + " " + comodinUsado + " " +"\"" + gestor.obtenerInfoJugador("Justin") + "\"";
+        System.out.println(gestor.obtenerInfoJugador("Justin"));
       consola.setText("");
       if (msg.length()>0){
           String args[] = CommandUtil.tokenizerArgs(msg);
@@ -808,8 +810,8 @@ public class Juego extends javax.swing.JFrame {
         StatusText.setText(gestor.obtenerInfoJugador(jugador));
     }
     
-    public void actualizarHUDEnemigo(String jugadorContrincante){
-        AgainstText.setText(gestor.obtenerInfoJugador(jugadorContrincante));
+    public void actualizarHUDEnemigo(String msg){
+        AgainstText.setText(msg);
     }
     
     public boolean haMuerto(){

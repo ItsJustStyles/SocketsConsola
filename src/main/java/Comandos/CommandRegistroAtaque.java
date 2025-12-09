@@ -33,6 +33,7 @@ public class CommandRegistroAtaque extends Command{
         String msg2 = "Weapon: " + arma;
         client.getRefFrame().writeLog2(msg, msg2);
         client.getRefFrame().gestor.incrementarAttacks(client.name, 1);
+        client.getRefFrame().gestor.incrementarSuccess(client.name, 1);
         client.getRefFrame().actualizarHUD(client.name);
     }
     

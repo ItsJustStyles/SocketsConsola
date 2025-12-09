@@ -13,8 +13,8 @@ import Servidor.ThreadServidor;
  */
 public class CommandHit extends Command{
 
-    public CommandHit(String p, String arma, String atacante, String dano) {
-        super(CommandType.HIT, new String[]{p, arma, atacante, dano});
+    public CommandHit(String p, String arma, String atacante, String dano, String status) {
+        super(CommandType.HIT, new String[]{p, arma, atacante, dano, status});
     }
 
     @Override
@@ -28,6 +28,7 @@ public class CommandHit extends Command{
         String p = params[0];
         String arma = params[1];
         String attacker = params[2];
+        String status = params[4];
 
         String dano = params[3];
         int damage = Integer.parseInt(dano);
@@ -38,8 +39,7 @@ public class CommandHit extends Command{
         String log_1 = "Weapon: " + arma;
         client.getRefFrame().writeBitacora(mensaje);
         client.getRefFrame().writeLog(log, log_1);
-        client.getRefFrame().gestor.incrementarAttacks(attacker, 1);
-        client.getRefFrame().gestor.incrementarSuccess(attacker, 1);
+        client.getRefFrame().actualizarHUDEnemigo(status);
         
         if(client.getRefFrame().haMuerto()){
             client.getRefFrame().writeBitacora("Has muerto");

@@ -38,7 +38,7 @@ public class CommandChat extends Command{
         
         String[] text = getParameters();
         String textoEnviar = "";
-        for(int i = 1; i < text.length; i++){
+        for(int i = 1; i < text.length - 4; i++){
             textoEnviar += text[i] + " ";
         }
         client.getRefFrame().writeBitacora(nombreRemitente + ": " + textoEnviar);
