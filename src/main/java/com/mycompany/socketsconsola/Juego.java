@@ -1396,7 +1396,8 @@ public class Juego extends javax.swing.JFrame {
     }//GEN-LAST:event_CrearPartidaActionPerformed
 
     private void BuscarPartidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BuscarPartidaActionPerformed
-        cliente = new Client(this, "Maicol", heroesElegidos, 35500, "localhost");
+        cliente = new Client(this, "Gabriel", heroesElegidos, 11718, "bore.pub");
+        logJugador = new LogPartida("Gabriel");
         cardLayout = (CardLayout) (getContentPane().getLayout());
         cardLayout.show(getContentPane(), "card6");
     }//GEN-LAST:event_BuscarPartidaActionPerformed
