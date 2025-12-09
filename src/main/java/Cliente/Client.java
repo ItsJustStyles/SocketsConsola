@@ -80,5 +80,27 @@ public class Client {
     public Juego getRefFrame() {
         return refFrame;
     }
+
+    public void disconnect() {
+        try {
+            if (threadClient != null && threadClient.isAlive()) {
+                threadClient.interrupt(); 
+            }
+
+            if (objectSender != null) {
+                objectSender.close();
+            }
+            if (objectListener != null) {
+                objectListener.close();
+            }
+            if (socket != null && !socket.isClosed()) {
+                socket.close();
+            }
+
+        } catch (IOException e) {
+            System.err.println("Error al desconectar el cliente: " + e.getMessage());
+        }
+    }
+
      
 }

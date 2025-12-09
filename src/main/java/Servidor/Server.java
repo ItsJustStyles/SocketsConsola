@@ -224,4 +224,37 @@ public class Server {
         }
     }
    
+    public synchronized void addThreadServidor(ThreadServidor thread) {
+        if (thread != null && thread.name != null) {
+            connectedClients.add(thread);
+            showAllNames();
+        }
+    }
+    
+    public synchronized void removeThreadServidor(ThreadServidor thread) {
+        if (thread != null) {
+            String removedName = thread.name != null ? thread.name : "Cliente Desconocido";
+
+            // 1. Eliminar de la lista principal
+            connectedClients.remove(thread);
+
+            // 2. Eliminar del sistema de turnos (llama a tu método existente)
+            if (turnSystemEnabled) {
+                eliminarJugador(thread); 
+            }
+
+            // 3. Eliminar de la lista de listos (si estaba en ella)
+            readyPlayers.remove(removedName);
+
+            // 5. Sincronizar la lista de jugadores en todos los clientes (Lobby)
+            showAllNames();
+
+            // 6. Notificar a todos los jugadores sobre la desconexión
+            broadcast(new CommandMessage(
+                new String[]{removedName + " se ha desconectado."}
+            ));
+        }
+    }
+    
+    
 }

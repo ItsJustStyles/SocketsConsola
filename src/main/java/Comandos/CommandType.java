@@ -33,7 +33,8 @@ public enum CommandType {
     MESSAGECONSOLA(0),
     LOG(0),
     REGISTROATAQUE(0),
-    GASTARCOMODIN(0);        
+    GASTARCOMODIN(0),
+    NAME_RESPONSE(0);        
     
     private final int requiredParameters;
 

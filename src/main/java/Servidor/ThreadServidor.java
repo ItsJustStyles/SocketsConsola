@@ -20,7 +20,7 @@ import java.util.Random;
  */
 public class ThreadServidor extends Thread {
     private Server server;
-    private Socket socket;
+    public Socket socket;
     
     // Streams para leer y escribir objetos
     public ObjectInputStream objectListener;

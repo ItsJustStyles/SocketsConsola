@@ -766,7 +766,7 @@ public class Juego extends javax.swing.JFrame {
     
     private void iniciarServer(){
         Server server = new Server(this);
-        cliente = new Client(this, "Justin", heroesElegidos, 35500, "localhost");
+        cliente = new Client(this, jugador, heroesElegidos, 35500, "localhost");
         logJugador = new LogPartida("Justin");
     }
     
@@ -1391,17 +1391,37 @@ public class Juego extends javax.swing.JFrame {
     }//GEN-LAST:event_ListoActionPerformed
 
     private void CrearPartidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CrearPartidaActionPerformed
-        iniciarServer();
-        
-        cardLayout = (CardLayout) (getContentPane().getLayout());
-        cardLayout.show(getContentPane(), "card6");
+        jugador = JOptionPane.showInputDialog(
+            "Por favor, ingresa tu nombre:"
+        );
+        if (jugador != null && !jugador.trim().isEmpty()) {
+            iniciarServer();
+        }else{
+            return;
+        }
     }//GEN-LAST:event_CrearPartidaActionPerformed
 
     private void BuscarPartidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BuscarPartidaActionPerformed
-        cliente = new Client(this, "Gabriel", heroesElegidos, 11718, "bore.pub");
-        logJugador = new LogPartida("Gabriel");
-        cardLayout = (CardLayout) (getContentPane().getLayout());
-        cardLayout.show(getContentPane(), "card6");
+        String puerto = JOptionPane.showInputDialog("Por favor, ingrese el ID de la partida:");
+        int port;
+        if(puerto != null && !puerto.trim().isEmpty()){
+            port = Integer.parseInt(puerto);
+        }else{
+            return;
+        }
+        
+        jugador = JOptionPane.showInputDialog(
+            "Por favor, ingresa tu nombre:"
+        );
+        
+        if(jugador != null && !jugador.trim().isEmpty()){
+            cliente = new Client(this, jugador, heroesElegidos, 35500, "localhost");
+            logJugador = new LogPartida(jugador);
+        }else{
+            return;
+        }
+        
+
     }//GEN-LAST:event_BuscarPartidaActionPerformed
 
     /**
