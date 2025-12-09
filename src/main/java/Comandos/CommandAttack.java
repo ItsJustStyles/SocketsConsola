@@ -135,6 +135,14 @@ public class CommandAttack extends Command{
                         //threadServidor.getRefServer().getRefFrame().writeConsola("Error al enviar ataque a " + objetivo);
                     }
                     
+                    CommandRegistroAtaque registro = new CommandRegistroAtaque(p2Oarma2, objetivo, arma2);
+                    try {
+                        selfThread.objectSender.writeObject(registro);
+                        selfThread.objectSender.flush();
+                    } catch (java.io.IOException ex) {
+                        //threadServidor.getRefServer().getRefFrame().writeConsola("Error al enviar ataque a " + objetivo);
+                    }
+                    
                 }else if(verficarA2){
                     objetivo = params[4];
                     ThreadServidor targetThread = threadServidor.getRefServer().getClientByName(objetivo);
@@ -155,6 +163,16 @@ public class CommandAttack extends Command{
                     } catch (java.io.IOException ex) {
                         //threadServidor.getRefServer().getRefFrame().writeConsola("Error al enviar ataque a " + objetivo);
                     }
+                    
+                    CommandRegistroAtaque registro = new CommandRegistroAtaque(p, objetivo, p2Oarma2);
+                    try {
+                        selfThread.objectSender.writeObject(registro);
+                        selfThread.objectSender.flush();
+                    } catch (java.io.IOException ex) {
+                        //threadServidor.getRefServer().getRefFrame().writeConsola("Error al enviar ataque a " + objetivo);
+                    }
+                    
+                    
                 }else{
                     String msg = "Parametros para el ataque imcompletos";
                     CommandMessageConsola messageConsola = new CommandMessageConsola(msg);
@@ -245,6 +263,14 @@ public class CommandAttack extends Command{
             try {
                 targetThread.objectSender.writeObject(hitCommand);
                 targetThread.objectSender.flush();
+            } catch (java.io.IOException ex) {
+                //threadServidor.getRefServer().getRefFrame().writeConsola("Error al enviar ataque a " + objetivo);
+            }
+            
+            CommandRegistroAtaque registro = new CommandRegistroAtaque(p, objetivo, arma);
+            try {
+                selfThread.objectSender.writeObject(registro);
+                selfThread.objectSender.flush();
             } catch (java.io.IOException ex) {
                 //threadServidor.getRefServer().getRefFrame().writeConsola("Error al enviar ataque a " + objetivo);
             }

@@ -63,7 +63,7 @@ public class Juego extends javax.swing.JFrame {
     private List<Personajes> heroesElegidos;
     private Map<String, List<Armas>> catalogoArmas;
     private int indexArma = 0;
-    private GestorJson gestor = new GestorJson();
+    public GestorJson gestor = new GestorJson();
     Client cliente;
     
     private int alto = 800;
@@ -96,6 +96,8 @@ public class Juego extends javax.swing.JFrame {
     private boolean comodinTipo = true;
     private boolean comodinDesbloqueado = false;
     private boolean comodinUsado = false;
+    
+    private LogPartida logJugador;
     /**
      * Creates new form Juego
      */
@@ -113,8 +115,8 @@ public class Juego extends javax.swing.JFrame {
         configurarPantallaCompleta();
         iniciarElementos(ancho, alto);
         colocarFondos();
-        this.todosLosPersonajes = GestorJson.cargarPersonajes();
-        this.catalogoArmas = GestorJson.cargarCatalogoArmas();
+        this.todosLosPersonajes = gestor.cargarPersonajes();
+        this.catalogoArmas = gestor.cargarCatalogoArmas();
         cargarPersonajesEnScrollPanel();
         
         iniciarComodin();
@@ -755,13 +757,15 @@ public class Juego extends javax.swing.JFrame {
         logArma.setText(msg2);
     }
     
-    public void writeLog2(String msg){
+    public void writeLog2(String msg, String msg2){
         log2.setText(msg);
+        log2Arma.setText(msg2);
     }
     
     private void iniciarServer(){
         Server server = new Server(this);
         cliente = new Client(this, "Justin", heroesElegidos, 35500, "localhost");
+        logJugador = new LogPartida("Justin");
     }
     
     //Logica del ganador y perdedor:
@@ -800,8 +804,11 @@ public class Juego extends javax.swing.JFrame {
 
         dialog.setVisible(true);
     }
-    public void actualizarHUD(String jugador,String jugadorContrincante){
+    public void actualizarHUD(String jugador){
         StatusText.setText(gestor.obtenerInfoJugador(jugador));
+    }
+    
+    public void actualizarHUDEnemigo(String jugadorContrincante){
         AgainstText.setText(gestor.obtenerInfoJugador(jugadorContrincante));
     }
     
@@ -887,7 +894,14 @@ public class Juego extends javax.swing.JFrame {
         ventanaHeroes.setVisible(true);
     }
     
+    public void VerLog(String nombre){
+        LogPartida.abrirVentanaLogReciente(nombre);
+    }
     
+    
+    public void guardarLogsJugador(String comando, String parametros, String resultado){
+        logJugador.registrarComando(comando, parametros, resultado);
+    }
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -914,6 +928,7 @@ public class Juego extends javax.swing.JFrame {
         logArma = new javax.swing.JLabel();
         attack = new javax.swing.JPanel();
         log2 = new javax.swing.JLabel();
+        log2Arma = new javax.swing.JLabel();
         team = new javax.swing.JPanel();
         yourTeam = new javax.swing.JLabel();
         teamSeleccionado = new javax.swing.JPanel();
@@ -1075,18 +1090,20 @@ public class Juego extends javax.swing.JFrame {
                 .addComponent(log1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(logArma, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(304, Short.MAX_VALUE))
+                .addContainerGap(301, Short.MAX_VALUE))
         );
 
         Mapa.add(attacked);
-        attacked.setBounds(256, 0, 587, 361);
+        attacked.setBounds(256, 0, 587, 358);
 
         attack.setBackground(new java.awt.Color(102, 102, 255));
         attack.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         attack.setForeground(new java.awt.Color(0, 0, 0));
 
-        log2.setFont(new java.awt.Font("Unispace", 0, 14)); // NOI18N
+        log2.setFont(new java.awt.Font("Unispace", 0, 12)); // NOI18N
         log2.setText("No has atacado");
+
+        log2Arma.setFont(new java.awt.Font("Unispace", 0, 14)); // NOI18N
 
         javax.swing.GroupLayout attackLayout = new javax.swing.GroupLayout(attack);
         attack.setLayout(attackLayout);
@@ -1094,15 +1111,19 @@ public class Juego extends javax.swing.JFrame {
             attackLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(attackLayout.createSequentialGroup()
                 .addGap(17, 17, 17)
-                .addComponent(log2, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(435, Short.MAX_VALUE))
+                .addGroup(attackLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(log2Arma, javax.swing.GroupLayout.PREFERRED_SIZE, 305, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(log2, javax.swing.GroupLayout.PREFERRED_SIZE, 449, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(119, Short.MAX_VALUE))
         );
         attackLayout.setVerticalGroup(
             attackLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(attackLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(log2)
-                .addContainerGap(234, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(log2Arma, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(211, Short.MAX_VALUE))
         );
 
         Mapa.add(attack);
@@ -1282,7 +1303,7 @@ public class Juego extends javax.swing.JFrame {
             .addGroup(PartidasLayout.createSequentialGroup()
                 .addGap(163, 163, 163)
                 .addComponent(CrearPartida)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 493, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 793, Short.MAX_VALUE)
                 .addComponent(BuscarPartida)
                 .addGap(338, 338, 338))
         );
@@ -1452,6 +1473,7 @@ public class Juego extends javax.swing.JFrame {
     private javax.swing.JTextArea lobbyText;
     private javax.swing.JLabel log1;
     private javax.swing.JLabel log2;
+    private javax.swing.JLabel log2Arma;
     private javax.swing.JLabel logArma;
     private javax.swing.JLabel nombreVidaPersonaje;
     private javax.swing.JPanel panelArmas;

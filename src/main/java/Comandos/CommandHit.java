@@ -38,10 +38,13 @@ public class CommandHit extends Command{
         String log_1 = "Weapon: " + arma;
         client.getRefFrame().writeBitacora(mensaje);
         client.getRefFrame().writeLog(log, log_1);
+        client.getRefFrame().gestor.incrementarAttacks(attacker, 1);
+        client.getRefFrame().gestor.incrementarSuccess(attacker, 1);
         
         if(client.getRefFrame().haMuerto()){
             client.getRefFrame().writeBitacora("Has muerto");
             client.getRefFrame().mostrarDerrota();
+            client.getRefFrame().gestor.incrementarLoses(client.name, 1);
             CommandEliminarJugador cmd = new CommandEliminarJugador(client.name, "D"); 
             try {
                 client.objectSender.writeObject(cmd);

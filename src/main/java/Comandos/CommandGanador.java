@@ -28,6 +28,8 @@ public class CommandGanador extends Command{
          if(client.name.equals(ganador)){
              client.getRefFrame().mostrarVictoria(ganador);
          }
+         
+         client.getRefFrame().gestor.incrementarWins(client.name, 1);
     }
     
     

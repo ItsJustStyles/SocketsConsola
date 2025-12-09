@@ -20,7 +20,7 @@ public class CommandPasarTurno extends Command{
 
     @Override
     public void processForServer(ThreadServidor threadServidor) {
-        CommandUnicast comandoARealizar = new CommandUnicast("SALTARTURNO", threadServidor.name);
+        CommandUnicast comandoARealizar = new CommandUnicast("PASARTURNO", threadServidor.name);
         
         Server server = threadServidor.getRefServer();
         ThreadServidor jugadorActual = server.getCurrentTurnPlayer();

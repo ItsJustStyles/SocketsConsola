@@ -42,6 +42,9 @@ public class CommandChatPrivado extends Command{
             textoEnviar += text[i] + " ";
         }
         client.getRefFrame().writeBitacora(nombreRemitente + ": " + textoEnviar);
+        if(client.name.equals(nombreRemitente)){
+            client.getRefFrame().guardarLogsJugador("CHATPRIVADO", textoEnviar, "Ok");
+        }
     }
     
 }

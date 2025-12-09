@@ -28,7 +28,7 @@ public class CommandUnicast extends Command{
         String comandoARealizar = params[0];
         String nombre = params[1];
         
-        if(comandoARealizar.equals("SALTARTURNO")){
+        if(comandoARealizar.equals("PASARTURNO")){
             client.getRefFrame().writeBitacora("Has saltado tu turno");
         }else if(comandoARealizar.equals("USARCOMODIN")){
             if(client.getRefFrame().getComodinDesbloqueado()){
@@ -39,7 +39,12 @@ public class CommandUnicast extends Command{
             }else{
                 client.getRefFrame().writeConsola("El comodin aun no se ha desbloqueado");
             }
+        }else if(comandoARealizar.equals("LOG")){
+            client.getRefFrame().VerLog(nombre);
         }
+        
+        client.getRefFrame().guardarLogsJugador(comandoARealizar, "", "Ok");
+        
     }
      
 }

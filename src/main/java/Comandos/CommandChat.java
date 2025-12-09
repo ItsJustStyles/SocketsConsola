@@ -42,6 +42,10 @@ public class CommandChat extends Command{
             textoEnviar += text[i] + " ";
         }
         client.getRefFrame().writeBitacora(nombreRemitente + ": " + textoEnviar);
+        
+        if(client.name.equals(nombreRemitente)){
+            client.getRefFrame().guardarLogsJugador("CHAT", textoEnviar, "Ok");
+        }
     }
  
 }

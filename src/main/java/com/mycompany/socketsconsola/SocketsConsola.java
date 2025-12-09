@@ -14,8 +14,6 @@ import java.util.Scanner;
 public class SocketsConsola {
     public static void main(String[] args) {
 
-        LogPartida.abrirVentanaLogReciente("Juan");
-
-    }
+        }
     }
 

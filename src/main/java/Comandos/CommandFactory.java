@@ -31,6 +31,8 @@ public class CommandFactory {
                 return new CommandChat(args);
             case "CHATPRIVADO":
                 return new CommandChatPrivado(args);
+            case "LOG":
+                return new CommandLog(args);
             default:
                 return null;
         }
