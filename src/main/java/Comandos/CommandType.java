@@ -32,7 +32,8 @@ public enum CommandType {
     CHAT_PRIVADO(3),
     MESSAGECONSOLA(0),
     LOG(0),
-    REGISTROATAQUE(0);        
+    REGISTROATAQUE(0),
+    GASTARCOMODIN(0);        
     
     private final int requiredParameters;
 

@@ -11,10 +11,10 @@ import Servidor.ThreadServidor;
  *
  * @author lacay
  */
-public class CommandGanador extends Command{
+public class CommandGastarComodin extends Command{
 
-    public CommandGanador(String nombre) {
-        super(CommandType.GANADOR, new String[]{nombre});
+    public CommandGastarComodin() {
+        super(CommandType.GASTARCOMODIN, new String[]{});
     }
 
     @Override
@@ -24,15 +24,6 @@ public class CommandGanador extends Command{
 
     @Override
     public void processInClient(Client client) {
-         String ganador = getParameters()[0];
-         if(client.name.equals(ganador)){
-             client.getRefFrame().mostrarVictoria(ganador);
-             client.getRefFrame().gestor.incrementarWins(client.name, 1);
-         }
-         
-         
+        client.getRefFrame().iniciarComodin();
     }
-    
-    
-    
 }

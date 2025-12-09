@@ -199,6 +199,15 @@ public class CommandAttack extends Command{
                 return;
             }
             
+            CommandGastarComodin gastarComodin = new CommandGastarComodin();
+            try {
+                selfThread.objectSender.writeObject(gastarComodin);
+                selfThread.objectSender.flush();
+            } catch (java.io.IOException ex) {
+                //threadServidor.getRefServer().getRefFrame().writeConsola("Error al enviar ataque a " + objetivo);
+            }
+            
+            server.avanzarTurno();
         }else{
         
             String[] params = this.getParameters();
