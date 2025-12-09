@@ -93,6 +93,11 @@ public class ThreadServidor extends Thread {
                 break;
             }
         }
+        
+        if (p == null) {
+            return false;
+        }
+        
         List<Armas> armasHeroe = p.getArmas();
         for(Armas a : armasHeroe){
             if(a.getNombre().equals(arma.toLowerCase()) || a.getNombreSecundario().equals(arma.toLowerCase())){

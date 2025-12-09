@@ -97,12 +97,12 @@ public class CommandAttack extends Command{
                 }
                 
                 boolean verficarP2 = threadServidor.esPersonajeValido(p2Oarma2);
-                boolean verficarA2 = threadServidor.esArmaValida(p, p2Oarma2);
+                boolean verficarA2 = threadServidor.esArmaValida(p2Oarma2, p);
                 
                 if(verficarP2){
                     arma2 = params[4];
                     objetivo = params[5];
-                    boolean verficarArma = threadServidor.esArmaValida(p2Oarma2, arma2);
+                    boolean verficarArma = threadServidor.esArmaValida(arma2, p2Oarma2);
                     if(!verficarArma){
                         String msg = "El arma no es valida";
                         CommandMessageConsola messageConsola = new CommandMessageConsola(msg);
@@ -136,7 +136,25 @@ public class CommandAttack extends Command{
                     }
                     
                 }else if(verficarA2){
+                    objetivo = params[4];
+                    ThreadServidor targetThread = threadServidor.getRefServer().getClientByName(objetivo);
+                    String damage = threadServidor.obtenerDano(arma, p) + "";
+                    CommandHit hitCommand = new CommandHit(p, arma, threadServidor.name, damage);
+                    try {
+                        targetThread.objectSender.writeObject(hitCommand);
+                        targetThread.objectSender.flush();
+                    } catch (java.io.IOException ex) {
+                        //threadServidor.getRefServer().getRefFrame().writeConsola("Error al enviar ataque a " + objetivo);
+                    }
                     
+                    String damage2 = threadServidor.obtenerDano(arma, p) + "";
+                    CommandHit hitCommand2 = new CommandHit(p, p2Oarma2, threadServidor.name, damage2);
+                    try {
+                        targetThread.objectSender.writeObject(hitCommand2);
+                        targetThread.objectSender.flush();
+                    } catch (java.io.IOException ex) {
+                        //threadServidor.getRefServer().getRefFrame().writeConsola("Error al enviar ataque a " + objetivo);
+                    }
                 }else{
                     String msg = "Parametros para el ataque imcompletos";
                     CommandMessageConsola messageConsola = new CommandMessageConsola(msg);
