@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.SwingUtilities;
 
 /**
  *
@@ -184,6 +185,17 @@ public class LogPartida {
         }
         
         return obtenerContenidoLog(logs.get(0).getRutaCompleta());
+    }
+    public static void abrirVentanaLogReciente(String nombreJugador) {
+        String contenido = obtenerLogMasReciente(nombreJugador);
+        abrirVentanaConContenido(nombreJugador, contenido, "Log más reciente");
+    }
+
+    public static void abrirVentanaConContenido(String nombreJugador, String contenido, String titulo) {
+        SwingUtilities.invokeLater(() -> {
+            VentanaLog ventana = new VentanaLog(nombreJugador, contenido, titulo);
+            ventana.setVisible(true);
+        });
     }
     
     
